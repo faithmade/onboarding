@@ -3,7 +3,7 @@ $(function() {
 		setStep($('.next-step').attr('data-next-step'));
 	});
 
-	setStep('logo');
+	setStep('intro');
 	$('.step-count--total-steps').html($('section[class^="onboarding-"]').length);
 });
 
