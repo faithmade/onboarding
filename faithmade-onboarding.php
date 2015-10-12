@@ -3,8 +3,8 @@
  * Plugin Name: Faithmade Onboarding
  * Description: The onboarding experience for the Faithmade Network
  * Version: 0.1
- * Author: Anthony Garand and Christian Chung
- * Author URI: http://liftux.com
+ * Author: Faithmade
+ * Author URI: http://faithmade.com
  * Text Domain: faithmade_ob
  */
 
