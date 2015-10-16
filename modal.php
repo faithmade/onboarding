@@ -75,7 +75,62 @@
 			</section>
 
 			<section class="onboarding-fonts" data-title="Select Fonts" data-description="Your theme includes custom fonts. Select from the options below.">
-				Fonts
+				<div class="onboarding-fonts--header">
+					<div class="onboarding-fonts--header--headings">Headings</div>
+					<div class="onboarding-fonts--header--body">Body</div>
+				</div>
+				<div class="onboarding-fonts--list">
+					<div class="onboarding-fonts--font">
+						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
+						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
+						<div class="onboarding-fonts--font--button"><button>Select</button></div>
+					</div>
+					<div class="onboarding-fonts--font">
+						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
+						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
+						<div class="onboarding-fonts--font--button"><button>Select</button></div>
+					</div>
+					<div class="onboarding-fonts--font">
+						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
+						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
+						<div class="onboarding-fonts--font--button"><button>Select</button></div>
+					</div>
+					<div class="onboarding-fonts--font">
+						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
+						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
+						<div class="onboarding-fonts--font--button"><button>Select</button></div>
+					</div>
+					<div class="onboarding-fonts--font">
+						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
+						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
+						<div class="onboarding-fonts--font--button"><button>Select</button></div>
+					</div>
+					<div class="onboarding-fonts--font">
+						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
+						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
+						<div class="onboarding-fonts--font--button"><button>Select</button></div>
+					</div>
+					<div class="onboarding-fonts--font">
+						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
+						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
+						<div class="onboarding-fonts--font--button"><button>Select</button></div>
+					</div>
+					<div class="onboarding-fonts--font">
+						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
+						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
+						<div class="onboarding-fonts--font--button"><button>Select</button></div>
+					</div>
+					<div class="onboarding-fonts--font">
+						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
+						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
+						<div class="onboarding-fonts--font--button"><button>Select</button></div>
+					</div>
+					<div class="onboarding-fonts--font">
+						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
+						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
+						<div class="onboarding-fonts--font--button"><button>Select</button></div>
+					</div>
+				</div>
 			</section>
 
 			<section class="onboarding-sitemap" data-title="Learn Sitemap" data-description="Watch this video to learn about your built-in pages.">

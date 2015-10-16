@@ -16,6 +16,11 @@
 				$(this).closest('.onboarding-colors--color').addClass('onboarding-colors--color_active');
 			});
 
+			$('.onboarding-fonts--font button').on('click',function(){
+				$(this).closest('section').find('.onboarding-fonts--font').removeClass('onboarding-fonts--font_active');
+				$(this).closest('.onboarding-fonts--font').addClass('onboarding-fonts--font_active');
+			});
+
 			$('.step-count--total-steps').html($('section[class^="onboarding-"]').length);
 		},
 

@@ -142,6 +142,7 @@ section {
 	padding: 30px;
 	flex: 1;
 	overflow: auto;
+	background: #f2f2f2;
 }
 
 section.active {
@@ -149,6 +150,11 @@ section.active {
 }
 
 section.onboarding-colors {
+	flex-direction: column;
+}
+
+section.onboarding-fonts {
+	padding: 0;
 	flex-direction: column;
 }
 
@@ -219,4 +225,56 @@ section.onboarding-colors {
 	color: #333;
 	background: #eee;
 	box-shadow: 0 0 0 4px rgba(0,0,0,.2);
+}
+
+.onboarding-fonts--header {
+	padding: 10px 60px;
+	border-bottom: 2px solid #ddd;
+	text-transform: uppercase;
+	display: flex;
+	background: #fff;
+}
+
+.onboarding-fonts--header--headings {
+	flex: 1;
+}
+
+.onboarding-fonts--header--body {
+	flex: 2;
+}
+
+.onboarding-fonts--list {
+}
+
+.onboarding-fonts--font {
+	display: flex;
+	align-items: center;
+	padding: 20px 0;
+}
+
+.onboarding-fonts--font_active {
+	background-color: #addeff;
+}
+
+.onboarding-fonts--font--heading {
+	flex: 1;
+	font-size: 28px;
+	font-weight: 600;
+	padding-left: 60px;
+}
+
+.onboarding-fonts--font--body {
+	flex: 2;
+	font-size: 18px;
+}
+
+.onboarding-fonts--font--button {
+	padding-right: 60px;
+}
+
+.onboarding-fonts--font--button button {
+	padding: 0;
+	background: none;
+	margin: 0;
+	color: #333;
 }
