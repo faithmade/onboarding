@@ -20,7 +20,7 @@
 					<div class="step-count">STEP <span class="step-count--current-step"></span> of <span class="step-count--total-steps"></span></div>
 					<button class="next-step"></button>
 				</div>
-			</header>	
+			</header>
 
 			<section class="onboarding-intro" data-title="Welcome to Faithmade" data-description="Get started with Faithmade. Let's start building a site!">
 				<video controls>
@@ -37,7 +37,41 @@
 			</section>
 
 			<section class="onboarding-colors" data-title="Select Colors" data-description="Each theme offers a custom color scheme.">
-				Colors
+				<div class="onboarding-colors--color">
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_secondary" style="background-color: #bada55;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #333;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_primary" style="background-color: slategrey;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #bbb;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_tertiary" style="background-color: rebeccapurple;"><button>Select</button></div>
+				</div>
+				<div class="onboarding-colors--color">
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_secondary" style="background-color: #bada55;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #333;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_primary" style="background-color: slategrey;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #bbb;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_tertiary" style="background-color: rebeccapurple;"><button>Select</button></div>
+				</div>
+				<div class="onboarding-colors--color">
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_secondary" style="background-color: #bada55;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #333;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_primary" style="background-color: slategrey;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #bbb;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_tertiary" style="background-color: rebeccapurple;"><button>Select</button></div>
+				</div>
+				<div class="onboarding-colors--color">
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_secondary" style="background-color: #bada55;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #333;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_primary" style="background-color: slategrey;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #bbb;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_tertiary" style="background-color: rebeccapurple;"><button>Select</button></div>
+				</div>
+				<div class="onboarding-colors--color">
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_secondary" style="background-color: #bada55;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #333;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_primary" style="background-color: slategrey;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #bbb;"></div>
+					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_tertiary" style="background-color: rebeccapurple;"><button>Select</button></div>
+				</div>
 			</section>
 
 			<section class="onboarding-fonts" data-title="Select Fonts" data-description="Your theme includes custom fonts. Select from the options below.">

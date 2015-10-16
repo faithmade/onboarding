@@ -1,7 +1,7 @@
 (function($) {
 	var Onboarding = {
 
-		current_step: 'intro',
+		current_step: 'colors',
 
 		initialize: function() {
 			var self = this;
@@ -9,6 +9,11 @@
 
 			$('.next-step').on('click', function() {
 				self.setStep($('.next-step').attr('data-next-step'));
+			});
+
+			$('.onboarding-colors--color button').on('click',function(){
+				$(this).closest('section').find('.onboarding-colors--color').removeClass('onboarding-colors--color_active');
+				$(this).closest('.onboarding-colors--color').addClass('onboarding-colors--color_active');
 			});
 
 			$('.step-count--total-steps').html($('section[class^="onboarding-"]').length);
@@ -39,7 +44,7 @@
 			$('.next-step').html(_nextStep.attr('data-title'));
 			$('.next-step').attr('data-next-step',_nextStep.attr('class').replace('onboarding-',''));
 			$('.step-count--current-step').html($('section[class^="onboarding-"]').index(_currentStep)+1);
-			
+
 			if( this['_'+this.current_step] && typeof this['_'+this.current_step] === 'function' ) {
 				this['_'+this.current_step]()
 			}

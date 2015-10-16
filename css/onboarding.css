@@ -1,10 +1,13 @@
-
+.faithmade_modal * {
+	box-sizing: border-box;
+}
 .faithmade_modal {
 	position: fixed;
-	top: 175px;
-	left: 225px;
-	right: 225px;
-	bottom: 175px;
+	top: 50px;
+	left: 50px;
+	right: 50px;
+	bottom: 50px;
+	overflow: hidden;
 	z-index: 160000;
 	font-family: sans-serif;
 	font-size: 14px;
@@ -27,14 +30,8 @@
 }
 
 .faithmade_modal .faithmade_modal-content {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	overflow: hidden;
-	min-height: 300px;
 	background: #fff;
+	height: 100%;
 }
 .faithmade_modal-backdrop {
 	position: fixed;
@@ -49,13 +46,11 @@
 }
 
 .faithmade_modal-main {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0 ;
-	z-index: 200;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
 }
+
 .faithmade_modal-main header {
 	background: #fff;
 	border-bottom: 2px solid #ddd;
@@ -144,10 +139,17 @@ button {
 
 section {
 	display: none;
+	padding: 30px;
+	flex: 1;
+	overflow: auto;
 }
 
 section.active {
 	display: flex;
+}
+
+section.onboarding-colors {
+	flex-direction: column;
 }
 
 .onboarding-logo {
@@ -176,4 +178,45 @@ section.active {
 	background: #fff;
 	padding: 20px;
 	border-radius: 4px;
+}
+
+.onboarding-colors--color {
+	display: flex;
+	width: 100%;
+	background: #fff;
+	border: 4px solid #ddd;
+	border-radius: 8px;
+	padding: 4px;
+	min-height: 112px;
+	margin-bottom: 30px;
+}
+
+.onboarding-colors--color_active {
+	border-color: #3498db;
+}
+
+.onboarding-colors--color-bar {
+	text-align: center;
+	padding: 20px;
+}
+
+.onboarding-colors--color-bar_alt {
+	flex: 1;
+}
+
+.onboarding-colors--color-bar_primary {
+	flex: 10;
+}
+
+.onboarding-colors--color-bar_secondary,
+.onboarding-colors--color-bar_tertiary {
+	flex: 3;
+}
+
+.onboarding-colors--color-bar button {
+	width: 100%;
+	margin: 0;
+	color: #333;
+	background: #eee;
+	box-shadow: 0 0 0 4px rgba(0,0,0,.2);
 }
