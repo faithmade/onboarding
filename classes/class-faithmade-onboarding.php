@@ -199,7 +199,7 @@ class Faithmade_Onboarding {
     	// Default Scripts
     	//wp_register_script( 'dropzone', 'https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js', array(), false, true );
     	//wp_register_style( 'dropzone', 'https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/dropzone.css');
-    	wp_enqueue_script( $this->slug . 'modal', plugins_url( '/js/onboarding.js', FAITHMADE_OB_PLUGIN_URL ), array('jquery','underscore','dropzone'), false, true );
+    	wp_enqueue_script( $this->slug . 'modal', plugins_url( '/js/onboarding.js', FAITHMADE_OB_PLUGIN_URL ), array('jquery','underscore'), false, true );
     	wp_localize_script( $this->slug . 'modal', 'FMOnboarding',
 				array(
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
