@@ -19,7 +19,7 @@ define( 'FAITHMADE_OB_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
  */
 function faithmade_onboarding() {
 	$onboarding = false;
-	if( is_admin() && isset( $_GET['onboarding'] ) ) {
+	if( ( is_admin() && isset( $_REQUEST['onboarding'] ) ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
 		if( empty( get_user_meta( wp_get_current_user()->ID, 'faithmade_onboarding_step', true ) ) ) {
 			$onboarding = 'intro';
 			update_user_meta( wp_get_current_user()->ID, 'faithmade_onboarding_step', $onboarding );

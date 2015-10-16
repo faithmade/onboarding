@@ -75,7 +75,43 @@
 		_intro: function() {
 			// Sample Callback for added wonderfulness.
 			console.log( 'in callback' );
-		}
+		},
+
+		_logo: function() {
+
+		},
+
+		_colors: function() {
+			console.log( 'In colors callback');
+			self = this;
+			//$(".palette-control").change(this.updateThemePalette);
+			$(".palette-selector").on('click',function(e) {
+				self.updatePaletteTo( $(this).attr('data-palette-value') );
+			});
+		},
+
+		_fonts: function() {
+
+		},
+
+		updatePaletteTo: function(palette_name) {
+			//$input = e.target;
+			$.ajax({
+				type: 'POST',
+				url: FMOnboarding.ajaxurl,
+				data: {
+					action: 'faithmade_onboarding',
+					current_step: 'colors',
+					palette: palette_name,
+				},
+				success: function( response ) {
+					console.log( response );
+				},
+				error: function( x,t,e ) {
+					console.log( e );
+				}
+			});
+		},
 	};
 	$onboarding = Onboarding.initialize();
 })(jQuery || Zepto);

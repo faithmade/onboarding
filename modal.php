@@ -37,41 +37,7 @@
 			</section>
 
 			<section class="onboarding-colors" data-title="Select Colors" data-description="Each theme offers a custom color scheme.">
-				<div class="onboarding-colors--color">
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_secondary" style="background-color: #bada55;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #333;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_primary" style="background-color: slategrey;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #bbb;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_tertiary" style="background-color: rebeccapurple;"><button>Select</button></div>
-				</div>
-				<div class="onboarding-colors--color">
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_secondary" style="background-color: #bada55;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #333;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_primary" style="background-color: slategrey;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #bbb;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_tertiary" style="background-color: rebeccapurple;"><button>Select</button></div>
-				</div>
-				<div class="onboarding-colors--color">
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_secondary" style="background-color: #bada55;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #333;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_primary" style="background-color: slategrey;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #bbb;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_tertiary" style="background-color: rebeccapurple;"><button>Select</button></div>
-				</div>
-				<div class="onboarding-colors--color">
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_secondary" style="background-color: #bada55;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #333;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_primary" style="background-color: slategrey;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #bbb;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_tertiary" style="background-color: rebeccapurple;"><button>Select</button></div>
-				</div>
-				<div class="onboarding-colors--color">
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_secondary" style="background-color: #bada55;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #333;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_primary" style="background-color: slategrey;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: #bbb;"></div>
-					<div class="onboarding-colors--color-bar onboarding-colors--color-bar_tertiary" style="background-color: rebeccapurple;"><button>Select</button></div>
-				</div>
+				<?php echo Faithmade_Onboarding::get_color_markup(); ?>
 			</section>
 
 			<section class="onboarding-fonts" data-title="Select Fonts" data-description="Your theme includes custom fonts. Select from the options below.">

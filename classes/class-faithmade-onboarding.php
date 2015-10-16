@@ -67,6 +67,20 @@ class Faithmade_Onboarding {
 	 * The markup for the modal window
 	 */
 	public $modal_markup = '';
+
+	/**
+	 * $obj_response
+	 *
+	 * A PHP Object to be encoded into JSON
+	 */
+	public $obj_response;
+
+	/**
+	 * $json_response
+	 *
+	 * A JSON formatted response
+	 */
+	public $json_response;
 	
 	/**
 	 * Initialize this class 
@@ -183,7 +197,8 @@ class Faithmade_Onboarding {
 	public function init_scripts() {
 		wp_enqueue_media();
     	// Default Scripts
-    	wp_register_script( 'dropzone', 'https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js', array(), false, true );
+    	//wp_register_script( 'dropzone', 'https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js', array(), false, true );
+    	//wp_register_style( 'dropzone', 'https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/dropzone.css');
     	wp_enqueue_script( $this->slug . 'modal', plugins_url( '/js/onboarding.js', FAITHMADE_OB_PLUGIN_URL ), array('jquery','underscore','dropzone'), false, true );
     	wp_localize_script( $this->slug . 'modal', 'FMOnboarding',
 				array(
@@ -191,7 +206,7 @@ class Faithmade_Onboarding {
 					'current_step' => $this->current_step,
 				) );
 
-    	wp_enqueue_style( $this->slug . 'modal', plugins_url( '/css/onboarding.css', FAITHMADE_OB_PLUGIN_URL ) );
+    	wp_enqueue_style( $this->slug . 'modal', plugins_url( '/css/onboarding.css', FAITHMADE_OB_PLUGIN_URL ), array('dropzone') );
 		return $this;
 	}
 
@@ -227,22 +242,6 @@ class Faithmade_Onboarding {
 	}
 
 	/**
-	 * Initialize Ajax Listener
-	 */
-	public function ajax_listener() {
-		if( ! isset( $_POST['current_step'] ) ) {
-			wp_send_json( array( 'success' => 'false' ) );
-		}
-		$step = sanitize_option( 'faithmade_onboarding_step', $_POST['current_step'] );
-
-		if( update_user_meta( $this->current_user->ID, 'faithmade_onboarding_step', $step ) ) {
-			wp_send_json( array( 'success' => 'true', 'current_step' => $step ) );
-		}
-
-		die('0');
-	}
-
-	/**
 	 * Check Dependencies
 	 *
 	 * Checks for the existence of the classes and functions this plugin relies on
@@ -268,111 +267,152 @@ class Faithmade_Onboarding {
 		return $this;
 	}
 
-	public function upload_image() {
-		// Get the post type. Since this function will run for ALL post saves (no matter what post type), we need to know this.
-	    // It's also important to note that the save_post action can runs multiple times on every post save, so you need to check and make sure the
-	    // post type in the passed object isn't "revision"
-	    $post_type = $post->post_type;
-
-	    // Make sure our flag is in there, otherwise it's an autosave and we should bail.
-	    if($post_id && isset($_POST['xxxx_manual_save_flag'])) { 
-
-	        // Logic to handle specific post types
-	        switch($post_type) {
-
-	            // If this is a post. You can change this case to reflect your custom post slug
-	            case 'post':
-
-	                // HANDLE THE FILE UPLOAD
-
-	                // If the upload field has a file in it
-	                if(isset($_FILES['xxxx_image']) && ($_FILES['xxxx_image']['size'] > 0)) {
-
-	                    // Get the type of the uploaded file. This is returned as "type/extension"
-	                    $arr_file_type = wp_check_filetype(basename($_FILES['xxxx_image']['name']));
-	                    $uploaded_file_type = $arr_file_type['type'];
-
-	                    // Set an array containing a list of acceptable formats
-	                    $allowed_file_types = array('image/jpg','image/jpeg','image/gif','image/png');
-
-	                    // If the uploaded file is the right format
-	                    if(in_array($uploaded_file_type, $allowed_file_types)) {
-
-	                        // Options array for the wp_handle_upload function. 'test_upload' => false
-	                        $upload_overrides = array( 'test_form' => false ); 
-
-	                        // Handle the upload using WP's wp_handle_upload function. Takes the posted file and an options array
-	                        $uploaded_file = wp_handle_upload($_FILES['xxxx_image'], $upload_overrides);
-
-	                        // If the wp_handle_upload call returned a local path for the image
-	                        if(isset($uploaded_file['file'])) {
-
-	                            // The wp_insert_attachment function needs the literal system path, which was passed back from wp_handle_upload
-	                            $file_name_and_location = $uploaded_file['file'];
-
-	                            // Generate a title for the image that'll be used in the media library
-	                            $file_title_for_media_library = 'your title here';
-
-	                            // Set up options array to add this file as an attachment
-	                            $attachment = array(
-	                                'post_mime_type' => $uploaded_file_type,
-	                                'post_title' => 'Uploaded image ' . addslashes($file_title_for_media_library),
-	                                'post_content' => '',
-	                                'post_status' => 'inherit'
-	                            );
-
-	                            // Run the wp_insert_attachment function. This adds the file to the media library and generates the thumbnails. If you wanted to attch this image to a post, you could pass the post id as a third param and it'd magically happen.
-	                            $attach_id = wp_insert_attachment( $attachment, $file_name_and_location );
-	                            require_once(ABSPATH . "wp-admin" . '/includes/image.php');
-	                            $attach_data = wp_generate_attachment_metadata( $attach_id, $file_name_and_location );
-	                            wp_update_attachment_metadata($attach_id,  $attach_data);
-
-	                            // Before we update the post meta, trash any previously uploaded image for this post.
-	                            // You might not want this behavior, depending on how you're using the uploaded images.
-	                            $existing_uploaded_image = (int) get_post_meta($post_id,'_xxxx_attached_image', true);
-	                            if(is_numeric($existing_uploaded_image)) {
-	                                wp_delete_attachment($existing_uploaded_image);
-	                            }
-
-	                            // Now, update the post meta to associate the new image with the post
-	                            update_post_meta($post_id,'_xxxx_attached_image',$attach_id);
-
-	                            // Set the feedback flag to false, since the upload was successful
-	                            $upload_feedback = false;
-
-
-	                        } else { // wp_handle_upload returned some kind of error. the return does contain error details, so you can use it here if you want.
-
-	                            $upload_feedback = 'There was a problem with your upload.';
-	                            update_post_meta($post_id,'_xxxx_attached_image',$attach_id);
-
-	                        }
-
-	                    } else { // wrong file type
-
-	                        $upload_feedback = 'Please upload only image files (jpg, gif or png).';
-	                        update_post_meta($post_id,'_xxxx_attached_image',$attach_id);
-
-	                    }
-
-	                } else { // No file was passed
-
-	                    $upload_feedback = false;
-
-	                }
-
-	                // Update the post meta with any feedback
-	                update_post_meta($post_id,'_xxxx_attached_image_upload_feedback',$upload_feedback);
-
-	            break;
-
-	            default:
-
-	        } // End switch
-
-	    return;
+	/**
+	 * Ajax Listener
+	 *
+	 * Method is called via WordPress Ajax Api.  Sets current step to the step passed in POST
+	 * data and calls the callback method for each step if a method exists.
+	 *
+	 * @return  void 
+	 */
+	public function ajax_listener() {
+		if( ! empty ( $this->obj_response ) ) {
+			unset( $this->obj_response );
+			$this->obj_response = new StdClass();
 		}
-		return;
+		$this->obj_response->code = 0;
+		$this->obj_response->messages = new StdClass();
+		$this->obj_response->data = new StdClass();
+		if( ! isset( $_REQUEST['current_step'] ) ) {
+			$this->obj_response->messages->error = "Current step is undefined.";
+			$this->send_json_response();
+		}
+		$step = sanitize_option( 'faithmade_onboarding_step', $_REQUEST['current_step'] );
+
+		if( update_user_meta( $this->current_user->ID, 'faithmade_onboarding_step', $step ) ) {
+			$this->obj_response->code = 200;
+			$this->obj_response->messages->updated = true;
+		}
+
+		// We've updated the current step, let's do anything additional
+		$method_name = 'ajax_route_' . $step;
+		if( method_exists( $this, $method_name ) ) {
+			call_user_func( array( $this, $method_name ) );
+		}
+
+		// Send the response
+		$this->send_json_response();
+
+		// If we get here, absolutely nothing happened.
+		die('Error 500: Nothing happened.');
+	}
+
+	public function send_json_response() {
+		$this->json_response = json_encode( $this->obj_response );
+		echo $this->json_response;
+		die();
+	}
+
+	/**
+	 * Ajax Route: Logo
+	 *
+	 * The Ajax Route for Logo Request.  Called by ajax_listener()
+	 * 
+	 * @return void
+	 */
+	public function ajax_route_colors() {
+		if( isset( $_POST['palette'] ) ) {
+			$theme_support = (array) get_theme_support( 'colorcase' );
+			$theme_support = $theme_support[0];
+			foreach($theme_support['palettes'] as $palette => $locations ) {
+				if( sanitize_title($palette) === sanitize_title( $_POST['palette' ] ) ) {
+					foreach( $locations as $location => $elements ) {
+						foreach( $elements as $color_location_label => $theme_color ) {
+							$slug = sanitize_title( $location . '_' . $color_location_label);
+							set_theme_mod( $slug, $theme_color );							
+							$this->obj_response->messages->updated = true;
+						}
+					}
+				} else {
+					$this->obj_response->messages->updated = false;
+				}
+			}
+		} else {
+			$this->obj_response->messages->updated = false;
+		}
+	}
+
+	/**
+	 * Ajax Route: Logo
+	 *
+	 * The Ajax Route for Logo Request.  Called by ajax_listener()
+	 * 
+	 * @return void
+	 */
+	protected function ajax_route_logo() {
+		
+	}
+
+	/**
+	 * Get Color Markup
+	 * 
+	 * Builds the Markup for Color Palette Selection from the list of color palettes defined
+	 * by the current theme.
+	 *
+	 * @return  STRING Valid HTML
+	 */
+	public static function get_color_markup() {
+		// get color palettes
+		$color_palettes = (array) Colorcase::colorcase_get_palettes();
+
+		// bail if no color palettes
+		if( $color_palettes == false || empty( $color_palettes ) ){
+			return;
+		}
+		ob_start();
+
+		foreach( $color_palettes as $color_palette_label => $color_palette_sections ){
+			// create unique slug
+			$color_palette_slug = sanitize_title( $color_palette_label );
+
+			// Pluck the colors out.
+			$primaries = wp_list_pluck( $color_palette_sections, 'Background Color');
+			$secondaries = wp_list_pluck( $color_palette_sections, 'Text Color');
+			$tertiaries = wp_list_pluck( $color_palette_sections, 'Link Color');
+			$alts = wp_list_pluck( $color_palette_sections, 'Link Hover Color');
+
+			// Define or empty $colors array
+			$colors = array();
+			// Merge our colors into a master array of colors ordered by precedent
+			$colors = array_merge( 
+				array_values($primaries), 
+				array_values($secondaries), 
+				array_values($tertiaries), 
+				array_values($alts) 
+			);
+			// Remove Duplicates
+			$colors = array_unique($colors);
+			
+			// Define each color by popping off the first color from our list of colors.
+			// If there aren't any more colors, reuse the previous color.
+			$primary = array_shift( $colors );
+			$secondary = ( $color = array_shift( $colors ) ) ? $color : $primary;
+			$tertiary = ( $color = array_shift( $colors ) ) ? $color : $secondary;
+			$alt1 = ( $color = array_shift( $colors ) ) ? $color : $tertiary;
+			$alt2 = ( $color = array_shift( $colors ) ) ? $color : $alt1;
+		?>
+			<div class="onboarding-colors--color">
+				<div class="onboarding-colors--color-bar onboarding-colors--color-bar_secondary" style="background-color: <?php echo $secondary; ?>;"></div>
+				<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: <?php echo $alt1; ?>;"></div>
+				<div class="onboarding-colors--color-bar onboarding-colors--color-bar_primary" style="background-color: <?php echo $primary; ?>;"></div>
+				<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: <?php echo $alt2; ?>;"></div>
+				<div class="onboarding-colors--color-bar onboarding-colors--color-bar_tertiary" style="background-color: <?php echo $tertiary; ?>;">
+					<button class="palette-selector" data-palette-value="<?php echo $color_palette_slug;?>"><?php echo $color_palette_label;?></button>
+				</div>
+			</div>
+		<?php
+		}
+        return ob_get_clean();
 	}
 
 	/**
@@ -383,6 +423,9 @@ class Faithmade_Onboarding {
 	 * @return OBJECT $this instance
 	 */
 	protected function die_quietly() {
+		if( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			die('0');
+		}
 		remove_action( 'admin_footer', array( $this, 'print_modal' ) );
 		remove_action( 'wp_ajax_faithmade_onboarding', array( $this, 'ajax_listener' ) );
 		wp_dequeue_script( $this->slug . 'modal' );
