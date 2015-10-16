@@ -81,6 +81,38 @@
 
 		},
 
+		_fonts: function() {
+
+		},
+
+		_fonts2: function() {
+			var self = this;
+			var section = $(".onboarding-fonts2");
+			if( $(".loading").is(":visible") ) {
+				$.ajax({
+					type: 'POST',
+					url: FMOnboarding.ajaxurl,
+					data: {
+						action: 'faithmade_onboarding',
+						current_step: this.current_step,
+						get_markup: true
+					},
+					success: function( response ) {
+						response = $.parseJSON( response );
+						section.html( response.markup );
+						$("head").append( response.head );
+						$(".font-select").on("change", function() {
+							self.updateFont( $(this).attr('name'), $(this).val() );
+						});
+						$(".loading").hide();
+					},
+					error: function( x,t,e ) {
+						console.log( e );
+					}
+				});
+			}			
+		},
+
 		_colors: function() {
 			console.log( 'In colors callback');
 			self = this;
@@ -112,6 +144,26 @@
 				}
 			});
 		},
+
+		updateFont: function( locationName, fontName ) {
+			console.log('Updating Font');
+			$.ajax({
+				type: 'POST',
+				url: FMOnboarding.ajaxurl,
+				data: {
+					action: 'faithmade_onboarding',
+					current_step: 'fonts2',
+					location: locationName,
+					font: fontName,
+				},
+				success: function( response ) {
+					console.log( response );
+				},
+				error: function( x,t,e ) {
+					console.log( e );
+				}
+			});
+		}
 	};
 	$onboarding = Onboarding.initialize();
 })(jQuery || Zepto);

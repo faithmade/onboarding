@@ -196,6 +196,9 @@ class Faithmade_Onboarding {
 	 */
 	public function init_scripts() {
 		wp_enqueue_media();
+		// Typecase 
+		global $typecase;
+		$typecase->admin_styles();
     	// Default Scripts
     	//wp_register_script( 'dropzone', 'https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js', array(), false, true );
     	//wp_register_style( 'dropzone', 'https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/dropzone.css');
@@ -206,7 +209,7 @@ class Faithmade_Onboarding {
 					'current_step' => $this->current_step,
 				) );
 
-    	wp_enqueue_style( $this->slug . 'modal', plugins_url( '/css/onboarding.css', FAITHMADE_OB_PLUGIN_URL ), array('dropzone') );
+    	wp_enqueue_style( $this->slug . 'modal', plugins_url( '/css/onboarding.css', FAITHMADE_OB_PLUGIN_URL ) );
 		return $this;
 	}
 
@@ -314,9 +317,9 @@ class Faithmade_Onboarding {
 	}
 
 	/**
-	 * Ajax Route: Logo
+	 * Ajax Route: Color
 	 *
-	 * The Ajax Route for Logo Request.  Called by ajax_listener()
+	 * The Ajax Route for Color Request.  Called by ajax_listener()
 	 * 
 	 * @return void
 	 */
@@ -341,6 +344,71 @@ class Faithmade_Onboarding {
 			$this->obj_response->messages->updated = false;
 		}
 	}
+
+
+	/**
+	 * Ajax Route: Fonts2
+	 *
+	 * The Ajax Route for Fonts2 Request.  Called by ajax_listener()
+	 * 
+	 * @return void
+	 */
+	protected function ajax_route_fonts2() {
+		if( $_POST['get_markup'] ) {
+			$this->send_font_selection_markup();
+		}
+
+		if( $_POST['location'] && $_POST['font'] ) {
+			set_theme_mod( $_POST['location'], $_POST['font'] );
+			$this->obj_response->code = 200;
+			$this->obj_response->updated = true;
+		}
+	}
+
+	protected function send_font_selection_markup() {
+		global $typecase;
+		$this->obj_response->markup = '';
+		$theme_support = (array) get_theme_support('typecase');
+		$font_locations = $theme_support[0];
+		$font_collection = get_option('typecase_fonts');
+
+		// placeholder array for parsed font names
+		$font_names = array();
+
+		// loop through typecase font collection
+		foreach( $font_collection as $font ){
+
+			$family = explode( "|",$font[0] );
+			$family = $family[0];
+
+			// add each font family to font options array
+			$font_names[$family] = $family;
+		}
+		ob_start();
+		foreach( $font_locations as $location_index => $location_meta ) {
+			echo sprintf( '<h1>Select %s Font</h1>', $location_meta['label'] );
+			?>
+				<div class="fonts_available">
+					<select class="font-select" name="<?php echo sanitize_title($location_meta['label']);?>">
+						<option>Select a Font</option>
+						<option value="<?php echo $location_meta['default'];?>">Default</option>
+					<?php foreach( $font_names as $indexed_name => $font_name ) : ?>
+						<option value="<?php echo $font_name;?>">
+							<?php echo $font_name;?>
+						</option>
+					<?php endforeach; ?>
+					</select>
+				</div>
+				<br>
+			<?php
+		}
+		$this->obj_response->markup = ob_get_clean();
+
+		ob_start();
+		$typecase->display_frontend();
+		$this->obj_response->head = ob_get_clean();
+	}
+
 
 	/**
 	 * Ajax Route: Logo
