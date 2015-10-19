@@ -118,6 +118,7 @@ class Faithmade_Onboarding {
 		// Setup the Ajax Listener
 		if( defined( 'DOING_AJAX' ) && DOING_AJAX ){
 			add_action( 'wp_ajax_faithmade_onboarding', array( $this, 'ajax_listener' ) );
+			//add_action('wp_ajax_plupload_action', array( $this, 'ajax_logo_action' ) );  
 		}
 
 		// Check Dependencies
@@ -196,6 +197,8 @@ class Faithmade_Onboarding {
 	 */
 	public function init_scripts() {
 		wp_enqueue_media();
+		//PLUpload
+		wp_enqueue_script('pluplaoad-all');
 		// Typecase 
 		global $typecase;
 		$typecase->admin_styles();
@@ -207,7 +210,30 @@ class Faithmade_Onboarding {
 				array(
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
 					'current_step' => $this->current_step,
-				) );
+					'plupload_config' => array(
+				        'runtimes' => 'html5,silverlight,flash,html4',
+				        'browse_button' => 'plupload-browse-button', // will be adjusted per uploader
+				        'container' => 'plupload-upload-ui', // will be adjusted per uploader
+				        'drop_element' => 'logo-drop-target', // will be adjusted per uploader
+				        'file_data_name' => 'async-upload', // will be adjusted per uploader
+				        'multiple_queues' => true,
+				        'max_file_size' => wp_max_upload_size() . 'b',
+				        'url' => admin_url('admin-ajax.php'),
+				        'flash_swf_url' => includes_url('js/plupload/plupload.flash.swf'),
+				        'silverlight_xap_url' => includes_url('js/plupload/plupload.silverlight.xap'),
+				        'filters' => array(array('title' => __('Allowed Files'), 'extensions' => '*')),
+				        'multipart' => true,
+				        'urlstream_upload' => true,
+				        'multi_selection' => false, // will be added per uploader
+				         // additional post data to send to our ajax hook
+				        'multipart_params' => array(
+				            '_ajax_nonce' => "", // will be added per uploader
+				            'action' => 'plupload_action', // the ajax action name
+				            'current_step' => 'logo',
+				            'imgid' => 0 // will be added per uploader
+				        )
+				    ),
+				));
 
     	wp_enqueue_style( $this->slug . 'modal', plugins_url( '/css/onboarding.css', FAITHMADE_OB_PLUGIN_URL ) );
 		return $this;
@@ -409,16 +435,42 @@ class Faithmade_Onboarding {
 		$this->obj_response->head = ob_get_clean();
 	}
 
-
 	/**
-	 * Ajax Route: Logo
+	 * Get Logo Markup
 	 *
-	 * The Ajax Route for Logo Request.  Called by ajax_listener()
-	 * 
-	 * @return void
+	 * Build the markup for the logo uploader.
+	 *
+	 * @return STRING Valid HTML
 	 */
-	protected function ajax_route_logo() {
-		
+	public static function get_logo_markup() {
+		$id = "img1"; // this will be the name of form field. Image url(s) will be submitted in $_POST using this key. So if $id == “img1” then $_POST[“img1”] will have all the image urls
+ 
+		$svalue = ""; // this will be initial value of the above form field. Image urls.
+		 		 
+		$width = null; // If you want to automatically resize all uploaded images then provide width here (in pixels)
+		 
+		$height = null; // If you want to automatically resize all uploaded images then provide height here (in pixels)
+
+		ob_start();
+		?>
+			<div class="onboarding-logo--title">Upload Your Logo</div>
+			<div class="onboarding-logo--description">Drag and drop your logo here or click the box to select an image.</div>
+			<p></p>
+			<input type="hidden" name="<?php echo $id; ?>" id="<?php echo $id; ?>" value="<?php echo $svalue; ?>" />  
+			<div class="plupload-upload-uic hide-if-no-js" id="<?php echo $id; ?>plupload-upload-ui">  
+			    <input id="<?php echo $id; ?>plupload-browse-button" type="button" value="<?php esc_attr_e('Browse Files'); ?>" class="onboarding-logo--file" />
+			    <span class="ajaxnonceplu" id="ajaxnonceplu<?php echo wp_create_nonce($id . 'pluploadan'); ?>"></span>
+			    <?php if ($width && $height): ?>
+			            <span class="plupload-resize"></span><span class="plupload-width" id="plupload-width<?php echo $width; ?>"></span>
+			            <span class="plupload-height" id="plupload-height<?php echo $height; ?>"></span>
+			    <?php endif; ?>
+			    <div class="filelist"></div>
+			</div>  
+			<div class="plupload-thumbs <?php if ($multiple): ?>plupload-thumbs-multiple<?php endif; ?>" id="<?php echo $id; ?>plupload-thumbs">  
+			</div>  
+			<div class="clear"></div>  
+		<?php
+		return ob_get_clean();
 	}
 
 	/**
@@ -502,3 +554,62 @@ class Faithmade_Onboarding {
 		return $this;
 	}
 }
+
+/**
+ * Plupload Action
+ *
+ * Hooking into pluploader to do our stuff, for some reason this is erroring out when we put
+ * it in the class;
+ * 
+ * @return void 
+ */
+function faithmade_onboarding_plupload_action() {
+ 
+    // check ajax noonce
+    $imgid = $_POST["imgid"];
+    check_ajax_referer($imgid . 'pluploadan');
+ 
+    // handle file upload
+    $uploaded_file = wp_handle_upload($_FILES[$imgid . 'async-upload'], array('test_form' => true, 'action' => 'plupload_action'));
+ 	// If the wp_handle_upload call returned a local path for the image
+    if(isset($uploaded_file['file'])) {
+
+        // The wp_insert_attachment function needs the literal system path, which was passed back from wp_handle_upload
+        $file_name_and_location = $uploaded_file['file'];
+
+        // Generate a title for the image that'll be used in the media library
+        $file_title_for_media_library = 'logo';
+
+        // Set up options array to add this file as an attachment
+        $attachment = array(
+            'post_mime_type' => $uploaded_file['type'],
+            'post_title' => 'Uploaded image ' . addslashes($file_title_for_media_library),
+            'post_content' => '',
+            'post_status' => 'inherit'
+        );
+
+        // Run the wp_insert_attachment function. This adds the file to the media library and generates the thumbnails. If you wanted to attch this image to a post, you could pass the post id as a third param and it'd magically happen.
+        $attach_id = wp_insert_attachment( $attachment, $file_name_and_location );
+        require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+        $attach_data = wp_generate_attachment_metadata( $attach_id, $file_name_and_location );
+        wp_update_attachment_metadata($attach_id,  $attach_data);
+
+        // Set the feedback flag to false, since the upload was successful
+        $upload_feedback = false;
+
+
+    } else { // wp_handle_upload returned some kind of error. the return does contain error details, so you can use it here if you want.
+
+        $upload_feedback = 'There was a problem with your upload.';
+    }
+    // Set it as the site logo
+    update_option( 'site_logo', array(
+    	'url' => wp_get_attachment_url($attach_id ),
+    	'id' => $attach_id
+    	) 
+    );
+    // send back the url of the new image on amazon s3
+    echo wp_get_attachment_url($attach_id );
+    exit;
+}
+add_action('wp_ajax_plupload_action', "faithmade_onboarding_plupload_action");

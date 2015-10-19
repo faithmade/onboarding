@@ -30,10 +30,11 @@
 				  <source src=http://techslides.com/demos/sample-videos/small.3gp type=video/3gp>
 				</video>
 			</section>
-			<section class="onboarding-logo" data-title="Customize Your Site" data-description="Allowed filetypes are .jpg, .png, and .gif.">
-				<div class="onboarding-logo--title">Upload Your Logo</div>
+			<section class="onboarding-logo" id="img1logo-drop-target" data-title="Customize Your Site" data-description="Allowed filetypes are .jpg, .png, and .gif.">
+				<?php echo Faithmade_Onboarding::get_logo_markup(); ?>
+				<!-- <div class="onboarding-logo--title">Upload Your Logo</div>
 				<div class="onboarding-logo--description">Drag and drop your logo here or click the box to select an image.</div>
-				<input type="file" class="onboarding-logo--file">
+				<input type="file" class="onboarding-logo--file"> -->
 			</section>
 
 			<section class="onboarding-colors" data-title="Select Colors" data-description="Each theme offers a custom color scheme.">
