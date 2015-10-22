@@ -411,15 +411,16 @@ class Faithmade_Onboarding {
 			$font_names[$family] = $family;
 		}
 		ob_start();
+		echo '<div id="locations-wrap">';
 		foreach( $font_locations as $location_index => $location_meta ) {
-			echo sprintf( '<h1>Select %s Font</h1>', $location_meta['label'] );
+			echo sprintf( '<div class="font-location" id="location-%1$s"><h1>Select %2$s Font</h1>', sanitize_title($location_meta['label']), $location_meta['label'] );
 			?>
 				<div class="fonts_available">
 					<select class="font-select" name="<?php echo sanitize_title($location_meta['label']);?>">
 						<option>Select a Font</option>
 						<option value="<?php echo $location_meta['default'];?>">Default</option>
 					<?php foreach( $font_names as $indexed_name => $font_name ) : ?>
-						<option value="<?php echo $font_name;?>">
+						<option value="<?php echo $font_name;?>" data-font-class="<?php echo sanitize_title( $font_name );?>">
 							<?php echo $font_name;?>
 						</option>
 					<?php endforeach; ?>
@@ -427,7 +428,19 @@ class Faithmade_Onboarding {
 				</div>
 				<br>
 			<?php
+			echo '</div> <!-- /.font-location -->';
+			
 		}
+		echo '</div> <!-- /#locations-wrap -->';
+		?>
+		<div id="font-preview">
+			<span>Typography Preview</span>
+			<h1 class="font-preview-heading">Heading 1</heading>
+			<h2 class="font-preview-heading">Heading 2</h2>
+			<h3 class="font-preview-heading">Heading 3</h3>
+			<p class="font-preview-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sagittis suscipit congue. Duis et porttitor nunc, consequat feugiat ligula. Pellentesque vehicula, tellus a blandit vestibulum, erat eros viverra dui, id facilisis magna lectus sit amet tellus. Vivamus tempor et diam eu posuere. Ut at sollicitudin arcu. Cras urna nunc, hendrerit et est a, dictum sodales tellus. Phasellus hendrerit, magna eget ornare tempor, nisl urna varius nisl, eget varius eros felis non massa. Integer volutpat maximus sagittis. Vivamus facilisis massa quis lectus consequat, eu scelerisque est varius. Pellentesque tincidunt luctus turpis. Nam congue urna sed ante bibendum, in venenatis turpis imperdiet. Sed vel ante dictum, venenatis nunc at, tempus nisl.</p>
+		</div>
+		<?php
 		$this->obj_response->markup = ob_get_clean();
 
 		ob_start();

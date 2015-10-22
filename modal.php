@@ -32,79 +32,20 @@
 			</section>
 			<section class="onboarding-logo" id="img1logo-drop-target" data-title="Customize Your Site" data-description="Allowed filetypes are .jpg, .png, and .gif.">
 				<?php echo Faithmade_Onboarding::get_logo_markup(); ?>
-				<!-- <div class="onboarding-logo--title">Upload Your Logo</div>
-				<div class="onboarding-logo--description">Drag and drop your logo here or click the box to select an image.</div>
-				<input type="file" class="onboarding-logo--file"> -->
 			</section>
 
 			<section class="onboarding-colors" data-title="Select Colors" data-description="Each theme offers a custom color scheme.">
 				<?php echo Faithmade_Onboarding::get_color_markup(); ?>
 			</section>
 
-			<section class="onboarding-fonts" data-title="Add Fonts" data-description="Your theme includes custom fonts. Add 1 or 2 fonts from the options below.">
+			<section class="onboarding-fonts" data-title="Add Fonts" data-description="Your theme includes custom fonts. Select a few custom fonts from the list below to use on your site.  Just click the plus button next to the font.">
 				<?php
 					global $typecase;
 					$typecase->ui();
 				?>
-				<!-- <div class="onboarding-fonts--header">
-					<div class="onboarding-fonts--header--headings">Headings</div>
-					<div class="onboarding-fonts--header--body">Body</div>
-				</div>
-				<div class="onboarding-fonts--list">
-					<div class="onboarding-fonts--font">
-						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
-						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
-						<div class="onboarding-fonts--font--button"><button>Select</button></div>
-					</div>
-					<div class="onboarding-fonts--font">
-						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
-						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
-						<div class="onboarding-fonts--font--button"><button>Select</button></div>
-					</div>
-					<div class="onboarding-fonts--font">
-						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
-						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
-						<div class="onboarding-fonts--font--button"><button>Select</button></div>
-					</div>
-					<div class="onboarding-fonts--font">
-						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
-						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
-						<div class="onboarding-fonts--font--button"><button>Select</button></div>
-					</div>
-					<div class="onboarding-fonts--font">
-						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
-						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
-						<div class="onboarding-fonts--font--button"><button>Select</button></div>
-					</div>
-					<div class="onboarding-fonts--font">
-						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
-						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
-						<div class="onboarding-fonts--font--button"><button>Select</button></div>
-					</div>
-					<div class="onboarding-fonts--font">
-						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
-						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
-						<div class="onboarding-fonts--font--button"><button>Select</button></div>
-					</div>
-					<div class="onboarding-fonts--font">
-						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
-						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
-						<div class="onboarding-fonts--font--button"><button>Select</button></div>
-					</div>
-					<div class="onboarding-fonts--font">
-						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
-						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
-						<div class="onboarding-fonts--font--button"><button>Select</button></div>
-					</div>
-					<div class="onboarding-fonts--font">
-						<div class="onboarding-fonts--font--heading" style="font-family: 'Marker Felt';">Open Sans</div>
-						<div class="onboarding-fonts--font--body" style="font-family: 'Avenir';">Open Sans is utilized for all body copy.</div>
-						<div class="onboarding-fonts--font--button"><button>Select</button></div>
-					</div>
-				</div> -->
 			</section>
 
-			<section class="onboarding-fonts2" data-title="Select Fonts" data-description="Decide which fonts you'd like to use for each headings and body content.">
+			<section class="onboarding-fonts2" data-title="Select Fonts" data-description="Select which font you'd like to use for headings and body copy.">
 				<div class="loading">
 					<h1>Loading Please Wait...</h1>
 				</div>

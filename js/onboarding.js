@@ -109,6 +109,15 @@
 						$("head").append( response.head );
 						$(".font-select").on("change", function() {
 							self.updateFont( $(this).attr('name'), $(this).val() );
+							var font_name = $(this).find('option[value="'+$(this).val()+'"]').attr('data-font-class');
+							console.log( $(this).attr('name'));
+							console.log(font_name);
+							if( 'main-title' == $(this).attr('name') ) {
+								$(".font-preview-heading").attr("class", 'font-preview-heading ' + font_name );
+							}
+							if( 'main-content' == $(this).attr('name') ) {
+								$(".font-preview-content").attr("class", 'font-preview-heading ' + font_name );
+							}
 						});
 						$(".loading").hide();
 					},
@@ -205,7 +214,14 @@
 	            var uploader = new plupload.Uploader(pconfig);
 	 
 	            uploader.bind('Init', function(up) {
-	 
+	 				var target = $("#img1logo-drop-target");
+	 				target.on("dragenter", function() {
+	 					console.log('dragenter');
+	 					$(this).css("border", "3px dashed black");
+	 				});
+	 				target.on("dragleave", function() {
+	 					$(this).css("border", "none");
+	 				});
 	            });
 	 
 	            uploader.init();
@@ -248,7 +264,9 @@
 	                    // single
 	                    $("#" + imgId).val(response + "");
 	                }
-	                // show thumbs 
+	                // Update UI
+	                $("input.onboarding-logo--file").hide();
+	                // show thumbs
 	                plu_show_thumbs(imgId);
 	            });
 	        });

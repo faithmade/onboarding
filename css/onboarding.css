@@ -186,6 +186,25 @@ section.onboarding-fonts {
 	border-radius: 4px;
 }
 
+.plupload-thumbs .thumb img {
+	border-radius: 4px;
+	margin-bottom: 15px;
+}
+
+.plupload-thumbs .thumb a {
+	width: 240px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    color: #6e768f;
+    text-decoration: none;
+    margin-top: 15px;
+    text-transform: uppercase;
+    font-weight: 600;
+    border: 1px solid #6e768f;
+}
+
 .onboarding-colors--color {
 	display: flex;
 	width: 100%;
@@ -278,3 +297,63 @@ section.onboarding-fonts {
 	margin: 0;
 	color: #333;
 }
+
+/* Overrides for Typecase UI */
+.onboarding-fonts #typecase header#masthead {
+    display: none;
+}
+.onboarding-fonts #typecase #firsttimer {
+    display: none;
+}
+.onboarding-fonts #typecase #your-collection-wrap {
+    display:none;
+}
+
+
+.onboarding-fonts2 #locations-wrap {
+	margin-left: 50px;
+	min-width: 30%;
+}
+
+.onboarding-fonts2 .font-location {
+	margin: 25px 15px;
+}
+
+.onboarding-fonts2 #font-preview {
+	background-color: white;
+	min-height: 80%;
+	margin-left: 50px;
+	border-radius: 4px;
+	box-shadow: 0 0 20px transparent inset, 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+    border: 1px solid #ccc;
+    overflow: hidden;
+}
+
+.onboarding-fonts2 #font-preview span{
+	display: block;
+	margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+    height: 40px;
+    line-height: 40px;
+    text-shadow: 0 1px 0 white;
+    text-indent: 15px;
+	border-radius: 4px 4px 0 0;
+	border-bottom: 1px solid #ccc;
+	text-transform: uppercase;
+    background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgi…3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQpIiAvPjwvc3ZnPiA=');
+    background-size: 100%;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, rgba(0, 0, 0, 0.02)), color-stop(100%, rgba(0, 0, 0, 0.07)));
+    background-image: -moz-linear-gradient(rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.07));
+    background-image: -webkit-linear-gradient(rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.07));
+    background-image: linear-gradient(rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.07));
+}
+
+.onboarding-fonts2 #font-preview h1,
+.onboarding-fonts2 #font-preview h2,
+.onboarding-fonts2 #font-preview h3,
+.onboarding-fonts2 #font-preview p {
+	margin-left: 20px;
+	padding-right: 20px;
+}
+
