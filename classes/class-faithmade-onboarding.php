@@ -21,13 +21,32 @@ class Faithmade_Onboarding {
 	protected $current_user;
 
 	/**
-	 * $cap
+	 * $min_cap
+	 *
+	 * edit_posts allows access to edit posts.
+	 *
+	 * @todo  Perhaps make this a user defined option.
+	 */
+	protected $min_cap = 'edit_posts';
+
+	/**
+	 * $max_cap
 	 *
 	 * edit_theme_options allows access to customizer, menus, widgets, etc.
 	 *
 	 * @todo  Perhaps make this a user defined option.
 	 */
-	protected $cap = 'edit_theme_options';
+	protected $max_cap = 'edit_theme_options';
+
+	/**
+	 * $cap_level
+	 *
+	 * Maps to the maximum capability of the current user as defined by the class properties
+	 * $min_cap and $max_cap
+	 *
+	 * @todo  Perhaps make this a user defined option.
+	 */
+	protected $cap_level = 'min_cap';
 
 	/**
 	 * $current_user_can;
@@ -46,6 +65,13 @@ class Faithmade_Onboarding {
 	protected $current_step;
 
 	/**
+	 * $onboarding_completed
+	 *
+	 * BOOL Whether onboarding has been previously completed.
+	 */
+	protected $onboarding_completed = false;
+
+	/**
 	 * $slug
 	 *
 	 * STRING The slug to preface actions/filters with
@@ -59,7 +85,7 @@ class Faithmade_Onboarding {
 	 *
 	 * @todo Make this do something
 	 */
-	public $dependencies = array();
+	public $dependencies = array('Colorcase', 'Typecase');
 
 	/**
 	 * $modal_markup
@@ -105,9 +131,13 @@ class Faithmade_Onboarding {
 
 		$this->check_permissions();
 
+		$this->check_blog_onboarding_complete();
+
 		$this->set_step();
 		
 		$this->set_modal_base_template();
+
+		$this->add_default_fonts();
 
 		// Init Styles and Scripts
 		add_action( 'admin_enqueue_scripts', array( $this, 'init_scripts' ) );
@@ -118,13 +148,12 @@ class Faithmade_Onboarding {
 		// Setup the Ajax Listener
 		if( defined( 'DOING_AJAX' ) && DOING_AJAX ){
 			add_action( 'wp_ajax_faithmade_onboarding', array( $this, 'ajax_listener' ) );
-			//add_action('wp_ajax_plupload_action', array( $this, 'ajax_logo_action' ) );  
 		}
 
 		// Check Dependencies
 		$this->ensure_dependencies();
 
-		do_action( $this->slug . 'init' );;
+		do_action( $this->slug . 'init' );
 		return $this;
 	}
 
@@ -153,16 +182,27 @@ class Faithmade_Onboarding {
 	 * @return OBJECT  $this instance
 	 */
 	public function check_permissions() {
-		if( ! isset( $this->cap ) ) {
+		if( ! isset( $this->min_cap )  || ! isset($this->max_cap ) ) {
 			$this->die_quietly();
 		}
 
-		if( ! current_user_can( $this->cap ) ) {
+		if( ! current_user_can( $this->min_cap ) ) {
 			$this->die_quietly();
 		} else {
 			$this->current_user_can = true;
+
+			if( current_user_can( $this->max_cap ) ) {
+				$this->cap_level = 'max_cap';
+			}
 		}
 		return $this;
+	}
+
+	public function check_blog_onboarding_complete() {
+		if( 'true' === get_option( 'faithmade_onboarding_complete' ) )
+			$this->onboarding_completed = true;
+
+		return $this; 
 	}
 
 	/**
@@ -202,20 +242,20 @@ class Faithmade_Onboarding {
 		// Typecase 
 		global $typecase;
 		$typecase->admin_styles();
+    	
     	// Default Scripts
-    	//wp_register_script( 'dropzone', 'https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js', array(), false, true );
-    	//wp_register_style( 'dropzone', 'https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/dropzone.css');
-    	wp_enqueue_script( $this->slug . 'modal', plugins_url( '/js/onboarding.js', FAITHMADE_OB_PLUGIN_URL ), array('jquery','underscore'), false, true );
+    	wp_enqueue_script( $this->slug . 'modal', plugins_url( '/js/onboarding.js', FAITHMADE_OB_PLUGIN_URL ), array('jquery','underscore', 'typecase'), false, true );
     	wp_localize_script( $this->slug . 'modal', 'FMOnboarding',
 				array(
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
 					'current_step' => $this->current_step,
+					'fmo_nonce' => wp_create_nonce( 'faithmade_onboarding' ),
 					'plupload_config' => array(
 				        'runtimes' => 'html5,silverlight,flash,html4',
-				        'browse_button' => 'plupload-browse-button', // will be adjusted per uploader
-				        'container' => 'plupload-upload-ui', // will be adjusted per uploader
-				        'drop_element' => 'logo-drop-target', // will be adjusted per uploader
-				        'file_data_name' => 'async-upload', // will be adjusted per uploader
+				        'browse_button' => 'plupload-browse-button',
+				        'container' => 'plupload-upload-ui',
+				        'drop_element' => 'logo-drop-target',
+				        'file_data_name' => 'async-upload',
 				        'multiple_queues' => true,
 				        'max_file_size' => wp_max_upload_size() . 'b',
 				        'url' => admin_url('admin-ajax.php'),
@@ -224,13 +264,12 @@ class Faithmade_Onboarding {
 				        'filters' => array(array('title' => __('Allowed Files'), 'extensions' => '*')),
 				        'multipart' => true,
 				        'urlstream_upload' => true,
-				        'multi_selection' => false, // will be added per uploader
-				         // additional post data to send to our ajax hook
+				        'multi_selection' => false, 
 				        'multipart_params' => array(
-				            '_ajax_nonce' => "", // will be added per uploader
-				            'action' => 'plupload_action', // the ajax action name
+				            '_ajax_nonce' => "",
+				            'action' => 'plupload_action', 
 				            'current_step' => 'logo',
-				            'imgid' => 0 // will be added per uploader
+				            'imgid' => 0 
 				        )
 				    ),
 				));
@@ -248,7 +287,12 @@ class Faithmade_Onboarding {
 	 * $return OBJECT $this instance
 	 */
 	protected function set_modal_base_template() {
-		$file = apply_filters( $this->slug . 'modal_file', FAITHMADE_OB_PLUGIN_PATH . 'modal.php' );
+		$filename = 'modal-abridged.php';
+
+		if( isset( $this->cap_level ) && 'max_cap' === $this->cap_level && ! $this->onboarding_completed ) {
+			$filename = 'modal.php';
+		}
+		$file = apply_filters( $this->slug . 'modal_file', FAITHMADE_OB_PLUGIN_PATH . $filename );
 		if( ! is_file( $file ) || ! is_readable( $file ) ) {
 			$this->die_quietly();
 		}
@@ -256,6 +300,42 @@ class Faithmade_Onboarding {
 		include( $file );
 		$this->modal_markup = apply_filters( $this->slug . 'modal_markup', ob_get_clean() );
 		
+		return $this;
+	}
+
+	/**
+	 * Add Default Fonts
+	 *
+	 * These are the fonts installed by the onboarding plugin that a user can select between.
+	 */
+	public function add_default_fonts() {
+		$typecase_fonts = get_option('typecase_fonts');
+		if( ! $typecase_fonts ) $typecase_fonts = array();
+		$font_pairs = get_theme_support( 'onboarding_font_pairs' );
+		$font_pairs = $font_pairs;
+		$onboarding_fonts = array();
+		if( $font_pairs ) {
+			foreach( $font_pairs as $font_pair ) {
+				foreach( $font_pair as $location ) {
+					foreach( $location as $font_array ) {
+						if( $font_array['font_load'] ) {
+							$onboarding_fonts[] = $font_array['font_load'];
+						}
+					}
+				}
+			}
+		}
+		$add_once = function($font_array) use (&$typecase_fonts) {
+			if( ! in_array_r( $font_array[0], $typecase_fonts ) ) 
+				array_push( $typecase_fonts, $font_array );
+		};
+		$add_fonts = array_map( $add_once, $onboarding_fonts );
+		update_option( 'typecase_fonts', $typecase_fonts );
+		add_action('admin_head', function() {
+			global $typecase;
+			$typecase->display_frontend();
+			return 0;
+		});
 		return $this;
 	}
 
@@ -290,7 +370,6 @@ class Faithmade_Onboarding {
 		foreach( $this->dependencies as $index => $dependency ) {
 			if( ! class_exists( $dependency ) && ! function_exists( $dependency ) ) {
 				$this->die_quietly();
-				return $this;
 			}
 		}
 		return $this;
@@ -312,7 +391,15 @@ class Faithmade_Onboarding {
 		$this->obj_response->code = 0;
 		$this->obj_response->messages = new StdClass();
 		$this->obj_response->data = new StdClass();
+
+		if( ! $this->nonce_is_valid() ) {
+			$this->obj_response->code = 403;
+			$this->obj_response->messages->error = "403 Forbidden";
+			$this->send_json_response();
+		}
+
 		if( ! isset( $_REQUEST['current_step'] ) ) {
+			$this->obj_response->code = 400;
 			$this->obj_response->messages->error = "Current step is undefined.";
 			$this->send_json_response();
 		}
@@ -333,7 +420,13 @@ class Faithmade_Onboarding {
 		$this->send_json_response();
 
 		// If we get here, absolutely nothing happened.
-		die('Error 500: Nothing happened.');
+		die('Error 500');
+	}
+
+	protected function nonce_is_valid() {
+		if( check_ajax_referer('faithmade_onboarding', 'fmo_nonce', false ) )
+			return true;
+		return false;
 	}
 
 	public function send_json_response() {
@@ -354,16 +447,16 @@ class Faithmade_Onboarding {
 			$theme_support = (array) get_theme_support( 'colorcase' );
 			$theme_support = $theme_support[0];
 			foreach($theme_support['palettes'] as $palette => $locations ) {
-				if( sanitize_title($palette) === sanitize_title( $_POST['palette' ] ) ) {
+				if( sanitize_title($palette) == sanitize_title( $_POST['palette' ] ) ) {
 					foreach( $locations as $location => $elements ) {
 						foreach( $elements as $color_location_label => $theme_color ) {
 							$slug = sanitize_title( $location . '_' . $color_location_label);
-							set_theme_mod( $slug, $theme_color );							
+							set_theme_mod( $slug, $theme_color );
+							$this->obj_response->code = 200;						
 							$this->obj_response->messages->updated = true;
 						}
 					}
-				} else {
-					$this->obj_response->messages->updated = false;
+					return;
 				}
 			}
 		} else {
@@ -371,81 +464,58 @@ class Faithmade_Onboarding {
 		}
 	}
 
-
 	/**
-	 * Ajax Route: Fonts2
+	 * Ajax Route: Fonts
 	 *
-	 * The Ajax Route for Fonts2 Request.  Called by ajax_listener()
+	 * The Ajax Route for Fonts Request.  Called by ajax_listener()
 	 * 
 	 * @return void
 	 */
-	protected function ajax_route_fonts2() {
-		if( $_POST['get_markup'] ) {
-			$this->send_font_selection_markup();
-		}
-
-		if( $_POST['location'] && $_POST['font'] ) {
-			set_theme_mod( $_POST['location'], $_POST['font'] );
+	protected function ajax_route_fonts() {
+		$this->obj_response->post = $_POST;
+		if( $_POST['hLocation'] && $_POST['hFont'] && $_POST['bLocation'] && $_POST['bFont'] ) {
+			set_theme_mod( sanitize_text_field( $_POST['hLocation'] ), sanitize_text_field ( $_POST['hFont'] ) );
+			set_theme_mod( sanitize_text_field( $_POST['bLocation'] ), sanitize_text_field ( $_POST['bFont'] ) );
 			$this->obj_response->code = 200;
 			$this->obj_response->updated = true;
+
 		}
 	}
 
-	protected function send_font_selection_markup() {
-		global $typecase;
-		$this->obj_response->markup = '';
-		$theme_support = (array) get_theme_support('typecase');
-		$font_locations = $theme_support[0];
-		$font_collection = get_option('typecase_fonts');
-
-		// placeholder array for parsed font names
-		$font_names = array();
-
-		// loop through typecase font collection
-		foreach( $font_collection as $font ){
-
-			$family = explode( "|",$font[0] );
-			$family = $family[0];
-
-			// add each font family to font options array
-			$font_names[$family] = $family;
+	/**
+	 * Ajax Route: Final
+	 *
+	 * The Ajax Route for Final Request.  Called by ajax_listener().
+	 * Set's faithmade_onboarding_complete option to true.
+	 * 
+	 * @return void
+	 */
+	public function ajax_route_final() {
+		update_user_meta( $this->current_user->ID, 'faithmade_onboarding_step', 'intro' );
+		if( update_option( 'faithmade_onboarding_complete', 'true' ) ) {
+			$this->obj_response->code = 200;						
+			$this->obj_response->messages->updated = true;
+		} else {
+			$this->obj_response->messages->updated = false;
 		}
-		ob_start();
-		echo '<div id="locations-wrap">';
-		foreach( $font_locations as $location_index => $location_meta ) {
-			echo sprintf( '<div class="font-location" id="location-%1$s"><h1>Select %2$s Font</h1>', sanitize_title($location_meta['label']), $location_meta['label'] );
-			?>
-				<div class="fonts_available">
-					<select class="font-select" name="<?php echo sanitize_title($location_meta['label']);?>">
-						<option>Select a Font</option>
-						<option value="<?php echo $location_meta['default'];?>">Default</option>
-					<?php foreach( $font_names as $indexed_name => $font_name ) : ?>
-						<option value="<?php echo $font_name;?>" data-font-class="<?php echo sanitize_title( $font_name );?>">
-							<?php echo $font_name;?>
-						</option>
-					<?php endforeach; ?>
-					</select>
-				</div>
-				<br>
-			<?php
-			echo '</div> <!-- /.font-location -->';
-			
-		}
-		echo '</div> <!-- /#locations-wrap -->';
-		?>
-		<div id="font-preview">
-			<span>Typography Preview</span>
-			<h1 class="font-preview-heading">Heading 1</heading>
-			<h2 class="font-preview-heading">Heading 2</h2>
-			<h3 class="font-preview-heading">Heading 3</h3>
-			<p class="font-preview-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sagittis suscipit congue. Duis et porttitor nunc, consequat feugiat ligula. Pellentesque vehicula, tellus a blandit vestibulum, erat eros viverra dui, id facilisis magna lectus sit amet tellus. Vivamus tempor et diam eu posuere. Ut at sollicitudin arcu. Cras urna nunc, hendrerit et est a, dictum sodales tellus. Phasellus hendrerit, magna eget ornare tempor, nisl urna varius nisl, eget varius eros felis non massa. Integer volutpat maximus sagittis. Vivamus facilisis massa quis lectus consequat, eu scelerisque est varius. Pellentesque tincidunt luctus turpis. Nam congue urna sed ante bibendum, in venenatis turpis imperdiet. Sed vel ante dictum, venenatis nunc at, tempus nisl.</p>
-		</div>
-		<?php
-		$this->obj_response->markup = ob_get_clean();
+	}
 
-		ob_start();
-		$typecase->display_frontend();
-		$this->obj_response->head = ob_get_clean();
+	/**
+	 * Ajax Route: Close
+	 *
+	 * The Ajax Route for Close Request.  Called by ajax_listener().
+	 * Set's faithmade_onboarding_complete option to true.
+	 * 
+	 * @return void
+	 */
+	public function ajax_route_close() {
+		$step = $_POST['previous_step'] ? sanitize_text_field( $_POST['previous_step'] ) : 'intro';
+		update_user_meta( $this->current_user->ID, 'faithmade_onboarding_step', $step );
+
+		if( 'never' === $_POST['close_preference'] ) {
+			update_user_meta( $this->current_user->ID, 'faithmade_onboarding_step', 'final' );
+			update_option('faithmade_onboarding_complete', 'true');
+		}
 	}
 
 	/**
@@ -464,11 +534,12 @@ class Faithmade_Onboarding {
 		 
 		$height = null; // If you want to automatically resize all uploaded images then provide height here (in pixels)
 
+		$multiple = false;
+
 		ob_start();
 		?>
 			<div class="onboarding-logo--title">Upload Your Logo</div>
 			<div class="onboarding-logo--description">Drag and drop your logo here or click the box to select an image.</div>
-			<p></p>
 			<input type="hidden" name="<?php echo $id; ?>" id="<?php echo $id; ?>" value="<?php echo $svalue; ?>" />  
 			<div class="plupload-upload-uic hide-if-no-js" id="<?php echo $id; ?>plupload-upload-ui">  
 			    <input id="<?php echo $id; ?>plupload-browse-button" type="button" value="<?php esc_attr_e('Browse Files'); ?>" class="onboarding-logo--file" />
@@ -477,7 +548,7 @@ class Faithmade_Onboarding {
 			            <span class="plupload-resize"></span><span class="plupload-width" id="plupload-width<?php echo $width; ?>"></span>
 			            <span class="plupload-height" id="plupload-height<?php echo $height; ?>"></span>
 			    <?php endif; ?>
-			    <div class="filelist"></div>
+			    <div class="filelist"><?php the_site_logo(); ?></div>
 			</div>  
 			<div class="plupload-thumbs <?php if ($multiple): ?>plupload-thumbs-multiple<?php endif; ?>" id="<?php echo $id; ?>plupload-thumbs">  
 			</div>  
@@ -504,7 +575,7 @@ class Faithmade_Onboarding {
 		}
 		ob_start();
 
-		foreach( $color_palettes as $color_palette_label => $color_palette_sections ){
+		foreach( $color_palettes as $color_palette_label => $color_palette_sections ) :
 			// create unique slug
 			$color_palette_slug = sanitize_title( $color_palette_label );
 
@@ -534,6 +605,7 @@ class Faithmade_Onboarding {
 			$alt1 = ( $color = array_shift( $colors ) ) ? $color : $tertiary;
 			$alt2 = ( $color = array_shift( $colors ) ) ? $color : $alt1;
 		?>
+			
 			<div class="onboarding-colors--color">
 				<div class="onboarding-colors--color-bar onboarding-colors--color-bar_secondary" style="background-color: <?php echo $secondary; ?>;"></div>
 				<div class="onboarding-colors--color-bar onboarding-colors--color-bar_alt" style="background-color: <?php echo $alt1; ?>;"></div>
@@ -543,9 +615,58 @@ class Faithmade_Onboarding {
 					<button class="palette-selector" data-palette-value="<?php echo $color_palette_slug;?>"><?php echo $color_palette_label;?></button>
 				</div>
 			</div>
+		
 		<?php
-		}
+		endforeach;
         return ob_get_clean();
+	}
+
+	/**
+	 * Get Font Markup
+	 * 
+	 * Builds the Markup for Font Palette Selection from the list of color palettes defined
+	 * by the current theme.
+	 *
+	 * @return  STRING Valid HTML
+	 */
+	public static function get_font_markup() {
+		// get onboarding fonts
+		$onboarding_fonts = get_theme_support( 'onboarding_font_pairs' );
+
+		if( is_array( $onboarding_fonts ) && ! empty( $onboarding_fonts ) ) {
+			$onboarding_fonts = $onboarding_fonts[0];
+		}
+
+		$format_heading = '<div class="onboarding-fonts--font--heading %1$s">%2$s</div>';
+		$format_body =  '<div class="onboarding-fonts--font--body %1$s">%2$s is utilized for all body copy.</div>';
+		$format_button = '<div class="onboarding-fonts--font--button"><button data-heading-font="%1$s" data-heading-location="%2$s" data-body-font="%3$s" data-body-location="%4$s">%5$s</div></div>';
+		ob_start();
+		echo '<div class="onboarding-fonts--list">';
+		foreach( $onboarding_fonts as $font_pair ) :	
+			echo '<div class="onboarding-fonts--font">';
+			$heading = $font_pair['heading'];
+			$body = $font_pair['body'];
+			echo sprintf( 
+				$format_heading, 
+				sanitize_title($heading['font_name']), 
+				$heading['font_name']
+				);
+			echo sprintf( 
+				$format_body, 
+				sanitize_title( $body['font_name']), 
+				$body['font_name']
+				);
+			echo sprintf( 
+				$format_button, 
+				$heading['font_name'],
+				'main-title',
+				$body['font_name'],
+				'main-content', 
+				__('Select')
+				);			
+		endforeach; // Pair
+		echo '</div> <!-- end font -->'; 	
+		return ob_get_clean();
 	}
 
 	/**
@@ -577,7 +698,6 @@ class Faithmade_Onboarding {
  * @return void 
  */
 function faithmade_onboarding_plupload_action() {
- 
     // check ajax noonce
     $imgid = $_POST["imgid"];
     check_ajax_referer($imgid . 'pluploadan');
@@ -610,19 +730,29 @@ function faithmade_onboarding_plupload_action() {
         // Set the feedback flag to false, since the upload was successful
         $upload_feedback = false;
 
-
+        // Set it as the site logo
+	    update_option( 'site_logo', array(
+	    	'url' => wp_get_attachment_url($attach_id ),
+	    	'id' => $attach_id
+	    	) 
+	    );
+	    $upload_feedback = wp_get_attachment_url($attach_id );
     } else { // wp_handle_upload returned some kind of error. the return does contain error details, so you can use it here if you want.
 
         $upload_feedback = 'There was a problem with your upload.';
     }
-    // Set it as the site logo
-    update_option( 'site_logo', array(
-    	'url' => wp_get_attachment_url($attach_id ),
-    	'id' => $attach_id
-    	) 
-    );
+    
     // send back the url of the new image on amazon s3
-    echo wp_get_attachment_url($attach_id );
+    echo $upload_feedback;
     exit;
 }
 add_action('wp_ajax_plupload_action', "faithmade_onboarding_plupload_action");
+
+function in_array_r($needle, $haystack, $strict = false) {
+    foreach ($haystack as $item) {
+        if (($strict ? $item === $needle : $item == $needle) || (is_array($item) && in_array_r($needle, $item, $strict))) {
+            return true;
+        }
+    }
+    return false;
+}

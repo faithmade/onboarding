@@ -11,10 +11,25 @@
 
 		initialize: function() {
 			var self = this;
+			if( 'close' === FMOnboarding.current_step ) {
+				FMOnboarding.current_step = 'intro';
+			}
 			this.setStep(FMOnboarding.current_step);
+
+			$(".faithmade_modal-close").on('click', function(e){
+				self.setStep('close');
+			});
+
+			$(".close-modal-action").on('click', function(e) {
+				self.closeModal(e);
+			});
 			
 			$('.next-step').on('click', function() {
 				self.setStep($('.next-step').attr('data-next-step'));
+			});
+
+			$('.step-item').on('click', function() {
+				self.setStep($(this).attr('data-goto-step') );
 			});
 
 			$('.onboarding-colors--color button').on('click',function(){
@@ -28,14 +43,20 @@
 			});
 
 			$('.step-count--total-steps').html($('section[class^="onboarding-"]').length);
+
+			$('a.site-logo-link').on('click', function(e){
+				e.preventDefault();
+				return false;
+			});
 		},
 
 		setStep: function(stepName) {
-			console.log( 'Setting step to ' + stepName );
+			this.previous_step = this.current_step ? this.current_step : 'intro';
 			this.current_step = stepName;
-			//console.log(stepName);
 			$('section.active[class^="onboarding-"]').removeClass('active');
 			$('section.onboarding-' + stepName).addClass('active');
+			$('.step-item.active').removeClass('active');
+			$('.step-item[data-goto-step="'+stepName+'"]').addClass('active');
 
 			var _currentStep = $('section.active[class^="onboarding-"]');
 			this.updateStep();
@@ -50,11 +71,15 @@
 			var _nextStep = $('section.onboarding-' + nextStep);
 
 			// Update header
-			$('.step-name').html(_currentStep.attr('data-title'));
+			$('.step-name').show().html(_currentStep.attr('data-title'));
 			$('.step-description').html(_currentStep.attr('data-description'));
 			$('.next-step').html(_nextStep.attr('data-title'));
 			$('.next-step').attr('data-next-step',_nextStep.attr('class').replace('onboarding-',''));
 			$('.step-count--current-step').html($('section[class^="onboarding-"]').index(_currentStep)+1);
+
+			if( 'close' === this.current_step || 'final' === this.current_step ) {
+				$(".next-step").hide();
+			}
 
 			if( this['_'+this.current_step] && typeof this['_'+this.current_step] === 'function' ) {
 				this['_'+this.current_step]()
@@ -62,15 +87,22 @@
 		},
 
 		updateStep: function() {
+			var self = this;
+			var step = this.current_step;
+			if( 'close' === this.current_step ) {
+				step = this.previous_step;
+			} 
 			$.ajax({
 				type: 'POST',
 				url: FMOnboarding.ajaxurl,
+
 				data: {
+					fmo_nonce: FMOnboarding.fmo_nonce,
 					action: 'faithmade_onboarding',
-					current_step: this.current_step
+					current_step: step,
 				},
 				success: function( response ) {
-					console.log( response );
+					self.addSuccessContext();
 				},
 				error: function( x,t,e ) {
 					console.log( e );
@@ -78,9 +110,48 @@
 			});
 		},
 
+		addSuccessContext: function() {
+			var step = this.current_step;
+			$(".faithmade_modal-nav li").each(function() {
+				if( $(this).attr('data-goto-step') === step ) {
+					return false;
+				}
+				$(this).find('span.step-number').html('<span class="dashicons dashicons-yes"></span>');
+			});
+		},
+
+		closeModal: function( e, pref ) {
+			var preference = 'later';
+			if( $(e).length ) {
+				preference = $(e.target).attr('data-close-preference');
+			}
+			if( $(pref).length ) {
+				preference = pref;
+			}
+			
+			$.ajax({
+				type: 'POST',
+				url: FMOnboarding.ajaxurl,
+
+				data: {
+					fmo_nonce: FMOnboarding.fmo_nonce,
+					action: 'faithmade_onboarding',
+					current_step: 'close',
+					previous_step: this.previous_step,
+					close_preference: preference,
+				},
+				success: function( response ) {
+					$(".faithmade_modal-backdrop, .faithmade_modal-fixed-container").fadeOut('fast');
+				},
+				error: function( x,t,e ) {
+					$(".faithmade_modal-backdrop, .faithmade_modal-fixed-container").fadeOut('fast');
+				}
+			});
+			
+		},
+
 		_intro: function() {
-			// Sample Callback for added wonderfulness.
-			console.log( 'in callback' );
+
 		},
 
 		_logo: function() {
@@ -88,90 +159,79 @@
 		},
 
 		_fonts: function() {
-
-		},
-
-		_fonts2: function() {
 			var self = this;
-			var section = $(".onboarding-fonts2");
-			if( $(".loading").is(":visible") ) {
-				$.ajax({
-					type: 'POST',
-					url: FMOnboarding.ajaxurl,
-					data: {
-						action: 'faithmade_onboarding',
-						current_step: this.current_step,
-						get_markup: true
-					},
-					success: function( response ) {
-						response = $.parseJSON( response );
-						section.html( response.markup );
-						$("head").append( response.head );
-						$(".font-select").on("change", function() {
-							self.updateFont( $(this).attr('name'), $(this).val() );
-							var font_name = $(this).find('option[value="'+$(this).val()+'"]').attr('data-font-class');
-							console.log( $(this).attr('name'));
-							console.log(font_name);
-							if( 'main-title' == $(this).attr('name') ) {
-								$(".font-preview-heading").attr("class", 'font-preview-heading ' + font_name );
-							}
-							if( 'main-content' == $(this).attr('name') ) {
-								$(".font-preview-content").attr("class", 'font-preview-heading ' + font_name );
-							}
-						});
-						$(".loading").hide();
-					},
-					error: function( x,t,e ) {
-						console.log( e );
-					}
-				});
-			}			
+			$(".onboarding-fonts--font--button button").on("click", function() {
+				var headingFont = $(this).attr('data-heading-font');
+				var headingLocation = $(this).attr('data-heading-location');
+				var bodyFont = $(this).attr('data-body-font');
+				var bodyLocation = $(this).attr('data-body-location');
+				self.updateFonts( headingFont, headingLocation, bodyFont, bodyLocation );
+			});
 		},
 
 		_colors: function() {
-			console.log( 'In colors callback');
 			self = this;
-			//$(".palette-control").change(this.updateThemePalette);
 			$(".palette-selector").on('click',function(e) {
 				self.updatePaletteTo( $(this).attr('data-palette-value') );
 			});
 		},
 
-		updatePaletteTo: function(palette_name) {
-			//$input = e.target;
+		_final: function() {
+			self = this;
 			$.ajax({
 				type: 'POST',
 				url: FMOnboarding.ajaxurl,
+
 				data: {
+					fmo_nonce: FMOnboarding.fmo_nonce,
+					action: 'faithmade_onboarding',
+					current_step: 'final',
+				},
+				success: function( response ) {
+					$(".faithmade_modal-backdrop, .faithmade_modal-fixed-container").fadeOut('fast');
+				},
+				error: function( x,t,e ) {
+				}
+			});
+		},
+
+		updatePaletteTo: function(palette_name) {
+			console.log('Trying to update palette to '+palette_name);
+			$.ajax({
+				type: 'POST',
+				url: FMOnboarding.ajaxurl,
+
+				data: {
+					fmo_nonce: FMOnboarding.fmo_nonce,
 					action: 'faithmade_onboarding',
 					current_step: 'colors',
 					palette: palette_name,
 				},
 				success: function( response ) {
-					console.log( response );
 				},
 				error: function( x,t,e ) {
-					console.log( e );
 				}
 			});
 		},
 
-		updateFont: function( locationName, fontName ) {
+		updateFonts: function( headingFont, headingLocation, bodyFont, bodyLocation ) {
 			console.log('Updating Font');
 			$.ajax({
 				type: 'POST',
 				url: FMOnboarding.ajaxurl,
+
 				data: {
+					fmo_nonce: FMOnboarding.fmo_nonce,
 					action: 'faithmade_onboarding',
-					current_step: 'fonts2',
-					location: locationName,
-					font: fontName,
+					current_step: 'fonts',
+					hFont: headingFont,
+					hLocation: headingLocation,
+					bFont: bodyFont,
+					bLocation: bodyLocation
 				},
 				success: function( response ) {
-					console.log( response );
 				},
 				error: function( x,t,e ) {
-					console.log( e );
 				}
 			});
 		}
@@ -216,7 +276,6 @@
 	            uploader.bind('Init', function(up) {
 	 				var target = $("#img1logo-drop-target");
 	 				target.on("dragenter", function() {
-	 					console.log('dragenter');
 	 					$(this).css("border", "3px dashed black");
 	 				});
 	 				target.on("dragleave", function() {
@@ -245,9 +304,7 @@
 	            });
 	 
 	            // a file was uploaded
-	            uploader.bind('FileUploaded', function(up, file, response) {
-	 				console.log(response['response']);
-	 
+	            uploader.bind('FileUploaded', function(up, file, response) {	 
 	                $('#' + file.id).fadeOut();
 	                response = response["response"]
 	                // add url to the hidden field
@@ -266,6 +323,7 @@
 	                }
 	                // Update UI
 	                $("input.onboarding-logo--file").hide();
+	                $(".site-logo-link").hide();
 	                // show thumbs
 	                plu_show_thumbs(imgId);
 	            });
