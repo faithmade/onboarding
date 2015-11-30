@@ -737,9 +737,8 @@ function faithmade_onboarding_plupload_action() {
 	    	) 
 	    );
 	    $upload_feedback = wp_get_attachment_url($attach_id );
-    } else { // wp_handle_upload returned some kind of error. the return does contain error details, so you can use it here if you want.
-
-        $upload_feedback = 'There was a problem with your upload.';
+    } else {
+        $upload_feedback = $uploaded_file;
     }
     
     // send back the url of the new image on amazon s3
