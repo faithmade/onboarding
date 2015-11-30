@@ -191,6 +191,7 @@
 					$(".faithmade_modal-backdrop, .faithmade_modal-fixed-container").fadeOut('fast');
 				},
 				error: function( x,t,e ) {
+					console.log(e);
 				}
 			});
 		},
@@ -210,6 +211,7 @@
 				success: function( response ) {
 				},
 				error: function( x,t,e ) {
+					console.log(e);
 				}
 			});
 		},
@@ -232,6 +234,7 @@
 				success: function( response ) {
 				},
 				error: function( x,t,e ) {
+					console.log(e);
 				}
 			});
 		}
