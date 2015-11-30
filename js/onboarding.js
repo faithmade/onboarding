@@ -309,6 +309,7 @@
 	            // a file was uploaded
 	            uploader.bind('FileUploaded', function(up, file, response) {	 
 	                $('#' + file.id).fadeOut();
+	                console.log(response);
 	                response = response["response"]
 	                // add url to the hidden field
 	                if ($this.hasClass("plupload-upload-uic-multiple")) {
