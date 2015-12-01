@@ -73,7 +73,7 @@
 			// Update header
 			$('.step-name').show().html(_currentStep.attr('data-title'));
 			$('.step-description').html(_currentStep.attr('data-description'));
-			$('.next-step').html(_nextStep.attr('data-title'));
+			$('.next-step').removeClass('skip').html('Continue');
 			$('.next-step').attr('data-next-step',_nextStep.attr('class').replace('onboarding-',''));
 			$('.step-count--current-step').html($('section[class^="onboarding-"]').index(_currentStep)+1);
 
@@ -155,11 +155,12 @@
 		},
 
 		_logo: function() {
-
+			$(".next-step").addClass('skip').html('Skip This Step');
 		},
 
 		_fonts: function() {
 			var self = this;
+			$(".next-step").addClass('skip').html('Skip This Step');
 			$(".onboarding-fonts--font--button button").on("click", function() {
 				var headingFont = $(this).attr('data-heading-font');
 				var headingLocation = $(this).attr('data-heading-location');
@@ -171,9 +172,15 @@
 
 		_colors: function() {
 			self = this;
+			$(".next-step").addClass('skip').html('Skip This Step');
 			$(".palette-selector").on('click',function(e) {
 				self.updatePaletteTo( $(this).attr('data-palette-value') );
 			});
+		},
+
+		_faith_builder: function() {
+			self = this;
+			$(".next-step").html('Finish');
 		},
 
 		_final: function() {
@@ -197,11 +204,9 @@
 		},
 
 		updatePaletteTo: function(palette_name) {
-			console.log('Trying to update palette to '+palette_name);
 			$.ajax({
 				type: 'POST',
 				url: FMOnboarding.ajaxurl,
-
 				data: {
 					fmo_nonce: FMOnboarding.fmo_nonce,
 					action: 'faithmade_onboarding',
@@ -209,6 +214,9 @@
 					palette: palette_name,
 				},
 				success: function( response ) {
+					if( 200 === response.code ) {
+						$(".next-step").removeClass('skip').html('Continue');
+					}
 				},
 				error: function( x,t,e ) {
 					console.log(e);
@@ -232,6 +240,9 @@
 					bLocation: bodyLocation
 				},
 				success: function( response ) {
+					if( 200 === response.code ) {
+						$(".next-step").removeClass('skip').html('Continue');
+					}
 				},
 				error: function( x,t,e ) {
 					console.log(e);
@@ -326,8 +337,9 @@
 	                    $("#" + imgId).val(response + "");
 	                }
 	                // Update UI
-	                $("input.onboarding-logo--file").hide();
+	                $(".plupload-upload-uic").hide();
 	                $(".site-logo-link").hide();
+	                $(".next-step").removeClass('skip').html('Continue');
 	                // show thumbs
 	                plu_show_thumbs(imgId);
 	            });
