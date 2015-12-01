@@ -129,6 +129,8 @@ class Faithmade_Onboarding {
 	public function __construct() {
 		$this->set_user();
 
+		$this->ensure_dependencies();
+
 		$this->check_permissions();
 
 		$this->check_blog_onboarding_complete();
@@ -149,9 +151,6 @@ class Faithmade_Onboarding {
 		if( defined( 'DOING_AJAX' ) && DOING_AJAX ){
 			add_action( 'wp_ajax_faithmade_onboarding', array( $this, 'ajax_listener' ) );
 		}
-
-		// Check Dependencies
-		$this->ensure_dependencies();
 
 		do_action( $this->slug . 'init' );
 		return $this;
@@ -236,15 +235,8 @@ class Faithmade_Onboarding {
 	 * @return OJBECT $this instance;
 	 */
 	public function init_scripts() {
-		wp_enqueue_media();
-		//PLUpload
-		wp_enqueue_script('pluplaoad-all');
-		// Typecase 
-		global $typecase;
-		$typecase->admin_styles();
-    	
     	// Default Scripts
-    	wp_enqueue_script( $this->slug . 'modal', plugins_url( '/js/onboarding.js', FAITHMADE_OB_PLUGIN_URL ), array('jquery','underscore', 'typecase'), false, true );
+    	wp_enqueue_script( $this->slug . 'modal', plugins_url( '/js/onboarding.js', FAITHMADE_OB_PLUGIN_URL ), array('jquery','underscore', 'plupload-all'), false, true );
     	wp_localize_script( $this->slug . 'modal', 'FMOnboarding',
 				array(
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
@@ -430,8 +422,7 @@ class Faithmade_Onboarding {
 	}
 
 	public function send_json_response() {
-		$this->json_response = json_encode( $this->obj_response );
-		echo $this->json_response;
+		wp_send_json( $this->obj_response);
 		die();
 	}
 
