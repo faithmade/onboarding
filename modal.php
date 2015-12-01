@@ -50,7 +50,7 @@
 							<div class="step-description"></div>
 						</div>
 						<div class="step-progress">
-							<button class="next-step"></button>
+							<button class="next-step">Continue</button>
 						</div>
 					</header>
 
@@ -70,7 +70,7 @@
 						<?php echo Faithmade_Onboarding::get_color_markup(); ?>
 					</section>
 
-					<section class="onboarding-fonts" data-title="Select Fonts" data-description="Your theme includes custom fonts. Select a few custom fonts from the list below to use on your site.  Just click the plus button next to the font.">
+					<section class="onboarding-fonts" data-title="Select a Font Pair" data-description="Your theme includes custom fonts. We have included below a few font pairs that work well together.  Select a pair of fonts you would like to use for your site.">
 						<div class="onboarding-fonts--header">
 							<div class="onboarding-fonts--header--headings">Headings</div>
 							<div class="onboarding-fonts--header--body">Body</div>
