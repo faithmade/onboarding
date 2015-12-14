@@ -427,6 +427,33 @@ class Faithmade_Onboarding {
 	}
 
 	/**
+	 * Ajax Route: Logo
+	 *
+	 * The Ajax Route for Logo Request.  Called by ajax_listener()
+	 * 
+	 * @return void
+	 */
+	public function ajax_route_logo() {
+		if( isset( $_POST['display_header_text'] ) ) {
+			if( 'false' === $_POST['display_header_text'] || ! $_POST['display_header_text'] ) {
+				set_theme_mod( 'header_textcolor', 'blank' );
+				$this->obj_response->code = 200;						
+				$this->obj_response->messages->updated = true;
+				$this->obj_response->messages->header_textcolor = get_theme_mod('header_textcolor');
+			} else {
+				// Use the default
+				set_theme_mod( 'header_textcolor', '000000' ); 
+				$this->obj_response->code = 202;						
+				$this->obj_response->messages->updated = true;
+				$this->obj_response->messages->header_textcolor = get_theme_mod('header_textcolor');
+
+			}
+		} else {
+			$this->obj_response->messages->updated = false;
+		}
+	}
+
+	/**
 	 * Ajax Route: Color
 	 *
 	 * The Ajax Route for Color Request.  Called by ajax_listener()
@@ -534,6 +561,10 @@ class Faithmade_Onboarding {
 			<input type="hidden" name="<?php echo $id; ?>" id="<?php echo $id; ?>" value="<?php echo $svalue; ?>" />  
 			<div class="plupload-upload-uic hide-if-no-js" id="<?php echo $id; ?>plupload-upload-ui">  
 			    <input id="<?php echo $id; ?>plupload-browse-button" type="button" value="<?php esc_attr_e('Browse Files'); ?>" class="onboarding-logo--file" />
+			 	<label>
+			 		<input type="checkbox" name="display_header_text" value="1" checked="checked">
+			 		Display Site Title and Site Description in Header
+			 	</label>
 			    <span class="ajaxnonceplu" id="ajaxnonceplu<?php echo wp_create_nonce($id . 'pluploadan'); ?>"></span>
 			    <?php if ($width && $height): ?>
 			            <span class="plupload-resize"></span><span class="plupload-width" id="plupload-width<?php echo $width; ?>"></span>

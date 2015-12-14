@@ -156,6 +156,14 @@
 
 		_logo: function() {
 			$(".next-step").addClass('skip').html('Skip This Step');
+			var self = this;
+			$("input[name='display_header_text']").on("change",function() {
+				if( $(this).is(":checked") ) { 
+					self.updateDisplayHeaderText(true);
+				} else {
+					self.updateDisplayHeaderText(false);
+				}
+			})
 		},
 
 		_fonts: function() {
@@ -196,6 +204,25 @@
 				},
 				success: function( response ) {
 					$(".faithmade_modal-backdrop, .faithmade_modal-fixed-container").fadeOut('fast');
+				},
+				error: function( x,t,e ) {
+					console.log(e);
+				}
+			});
+		},
+
+		updateDisplayHeaderText: function(display) {
+			if( 'boolean' !== typeof(display) ) {console.log('display not bool');return;}
+			$.ajax({
+				type: 'POST',
+				url: FMOnboarding.ajaxurl,
+				data: {
+					fmo_nonce: FMOnboarding.fmo_nonce,
+					action: 'faithmade_onboarding',
+					current_step: 'logo',
+					display_header_text: display,
+				},
+				success: function( response ) {
 				},
 				error: function( x,t,e ) {
 					console.log(e);

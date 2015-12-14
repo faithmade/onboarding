@@ -286,6 +286,12 @@ section.onboarding-fonts {
 .filelist {
 	margin-top: 30px;
 }
+
+.plupload-upload-uic label{
+	display: block;
+	margin-top: 15px;
+}
+
 .plupload-thumbs .thumb,
 .site-logo-link {
 	width: 150px;
