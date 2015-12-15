@@ -364,7 +364,7 @@
 	                    $("#" + imgId).val(response + "");
 	                }
 	                // Update UI
-	                $(".plupload-upload-uic").hide();
+	                $(".onboarding-logo--file").hide();
 	                $(".site-logo-link").hide();
 	                $(".next-step").removeClass('skip').html('Continue');
 	                // show thumbs
