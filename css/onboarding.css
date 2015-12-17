@@ -1,5 +1,5 @@
 @media (max-width: 1240px ) {
-	.faithmade_modal,
+	.faithmade_modal-fixed-container,
 	.faithmade_modal-backdrop {
 		display: none !important;
 	}
