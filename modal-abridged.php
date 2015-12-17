@@ -44,28 +44,19 @@
 
 				<section class="onboarding-intro" data-title="Welcome to Faithmade" data-description="Get started with Faithmade. Let's start building a site!">
 					<video controls>
-					  <source src=http://techslides.com/demos/sample-videos/small.webm type=video/webm>
-					  <source src=http://techslides.com/demos/sample-videos/small.ogv type=video/ogg>
-					  <source src=http://techslides.com/demos/sample-videos/small.mp4 type=video/mp4>
-					  <source src=http://techslides.com/demos/sample-videos/small.3gp type=video/3gp>
+					  <source src="https://s3-us-west-2.amazonaws.com/faithmade/wp-content/uploads/2015/12/17145937/onboarding-intro.mp4" type=video/mp4>
 					</video>
 				</section>
 
 				<section class="onboarding-sitemap" data-title="Learn Sitemap" data-description="Watch this video to learn about your built-in pages.">
 					<video controls>
-					  <source src=http://techslides.com/demos/sample-videos/small.webm type=video/webm>
-					  <source src=http://techslides.com/demos/sample-videos/small.ogv type=video/ogg>
-					  <source src=http://techslides.com/demos/sample-videos/small.mp4 type=video/mp4>
-					  <source src=http://techslides.com/demos/sample-videos/small.3gp type=video/3gp>
+					  <source src="https://s3-us-west-2.amazonaws.com/faithmade/wp-content/uploads/2015/12/17150019/onboarding-site-map-menus.mp4" type=video/mp4>
 					</video>
 				</section>
 
 				<section class="onboarding-faith_builder" data-title="Faith Builder" data-description="Learn more about our unique drag-and-drop page builder.">
 					<video controls>
-					  <source src=http://techslides.com/demos/sample-videos/small.webm type=video/webm>
-					  <source src=http://techslides.com/demos/sample-videos/small.ogv type=video/ogg>
-					  <source src=http://techslides.com/demos/sample-videos/small.mp4 type=video/mp4>
-					  <source src=http://techslides.com/demos/sample-videos/small.3gp type=video/3gp>
+					  <source src="https://s3-us-west-2.amazonaws.com/faithmade/wp-content/uploads/2015/12/17150256/onboarding-faith-builder.mp4" type=video/mp4>
 					</video>
 				</section>
 
