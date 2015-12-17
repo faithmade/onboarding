@@ -1,3 +1,10 @@
+@media (max-width: 1240px ) {
+	.faithmade_modal,
+	.faithmade_modal-backdrop {
+		display: none !important;
+	}
+}
+
 .faithmade_modal * {
 	box-sizing: border-box;
 }
@@ -359,6 +366,7 @@ section.onboarding-fonts {
 	color: #333;
 	background: #eee;
 	box-shadow: 0 0 0 4px rgba(0,0,0,.2);
+	white-space: nowrap;
 }
 
 .onboarding-fonts--header {
@@ -375,6 +383,13 @@ section.onboarding-fonts {
 	font-size: 16px;
 	text-transform: none;
 	font-weight: bold;
+	overflow: visible;
+}
+
+@media (max-width: 1566px ) {
+	.onboarding-fonts--header--headings {
+		height: 40px;
+	}
 }
 
 .onboarding-fonts--header--body {
