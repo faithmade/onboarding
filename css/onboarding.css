@@ -104,8 +104,8 @@
     height: 30px;
     padding: 3px;
     background: #fff;
-    border: 2px solid #6e768f;    
-    text-align: center;   
+    border: 2px solid #6e768f;
+    text-align: center;
    	display: inline-block;
    	margin-right: 6px;
 }
@@ -212,7 +212,6 @@
 
 video {
 	flex: 1;
-	background: #292929;
 }
 
 button,
