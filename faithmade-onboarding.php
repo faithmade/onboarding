@@ -17,13 +17,27 @@ define( 'FAITHMADE_OB_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 /**
  * Redirect Logins to Onboarding
  */
-function faithmade_maybe_redirect_onboarding($redirect_to, $requested_redirect_to, $user ) {
-	if( 'false' === get_option('faithmade_onboarding_complete') ) {
-		return admin_url('?onboarding');
+function faithmade_maybe_redirect_onboarding() {
+	$nag = get_user_meta( wp_get_current_user()->ID, 'faithmade_onboarding_nag_user', true );
+	if( '' === $nag || 'false' === $nag ){
+		return;
 	}
-	return $redirect_to;
+
+	update_user_meta( wp_get_current_user()->ID, 'faithmade_onboarding_nag_user', 'false' );
+	if( 'false' === get_option('faithmade_onboarding_complete') && ! isset( $_REQUEST['onboarding'] ) ) {
+		wp_redirect( admin_url('?onboarding'), $status = 302 ); exit;
+	}
 }
-add_filter( 'login_redirect', 'faithmade_maybe_redirect_onboarding', 100, 3 );
+if( ! is_main_site() && ( ! defined('DOING_AJAX') || ! DOING_AJAX || ! isset( $_REQUEST['onboarding'] ) ) ) {
+	add_action( 'admin_init', 'faithmade_maybe_redirect_onboarding', 100 );
+}
+
+function faithmade_onboarding_nag() {
+	if( 'false' === get_option( 'faithmade_onboarding_complete' ) ) {
+		update_user_meta( wp_get_current_user()->ID, 'faithmade_onboarding_nag_user', 'true' );
+	}
+}
+add_action('wp_logout', 'faithmade_onboarding_nag' );
 
 /**
  * Starts onboarding
