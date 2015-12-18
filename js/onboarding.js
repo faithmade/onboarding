@@ -53,6 +53,10 @@
 		setStep: function(stepName) {
 			this.previous_step = this.current_step ? this.current_step : 'intro';
 			this.current_step = stepName;
+			var video = $('.active').find('video');
+			if( video.length ) {
+				video[0].pause();
+			}
 			$('section.active[class^="onboarding-"]').removeClass('active');
 			$('section.onboarding-' + stepName).addClass('active');
 			$('.step-item.active').removeClass('active');
@@ -89,6 +93,7 @@
 		updateStep: function() {
 			var self = this;
 			var step = this.current_step;
+
 			if( 'close' === this.current_step ) {
 				step = this.previous_step;
 			} 
