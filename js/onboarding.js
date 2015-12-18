@@ -186,6 +186,10 @@
 			});
 		},
 
+		_sitemap: function() {
+			$(".step-description").append('<a href="http://support.faithmade.com/2015/11/17/creating-a-menu/" target="_blank" title="Creating a Menu">Click here</a> to follow these steps when creating your menu.');
+		},
+
 		_faith_builder: function() {
 			self = this;
 			$(".next-step").html('Finish');

@@ -42,19 +42,19 @@
 					</div>
 				</header>
 
-				<section class="onboarding-intro" data-title="Welcome to Faithmade" data-description="Get started with Faithmade. Let's start building a site!">
+				<section class="onboarding-intro" data-title="Welcome to Faithmade" data-description="Get started with Faithmade. Let's start building a site! Remember, the items you select here can always be changed later.">
 					<video controls>
 					  <source src="https://s3-us-west-2.amazonaws.com/faithmade/wp-content/uploads/2015/12/17145937/onboarding-intro.mp4" type=video/mp4>
 					</video>
 				</section>
 
-				<section class="onboarding-sitemap" data-title="Learn Sitemap" data-description="Watch this video to learn about your built-in pages.">
+				<section class="onboarding-sitemap" data-title="Learn Sitemap" data-description="Watch this video to learn about your built-in pages. ">
 					<video controls>
 					  <source src="https://s3-us-west-2.amazonaws.com/faithmade/wp-content/uploads/2015/12/17150019/onboarding-site-map-menus.mp4" type=video/mp4>
 					</video>
 				</section>
 
-				<section class="onboarding-faith_builder" data-title="Faith Builder" data-description="Learn more about our unique drag-and-drop page builder.">
+				<section class="onboarding-faith_builder" data-title="Faith Builder" data-description="Learn more about our unique drag-and-drop page builder. Our builder is as easy or as in-depth as you need. We have prebuilt templates set up for you to get started with ease.">
 					<video controls>
 					  <source src="https://s3-us-west-2.amazonaws.com/faithmade/wp-content/uploads/2015/12/17150256/onboarding-faith-builder.mp4" type=video/mp4>
 					</video>
