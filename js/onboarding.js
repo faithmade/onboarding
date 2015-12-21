@@ -407,6 +407,7 @@
 	                }
 	                $("#" + imgId).val(kimages.join());
 	                plu_show_thumbs(imgId);
+	                 $(".onboarding-logo--file").show();
 	                return false;
 	            });
 	        }
