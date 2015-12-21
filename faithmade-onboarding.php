@@ -19,7 +19,7 @@ define( 'FAITHMADE_OB_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
  */
 function faithmade_maybe_redirect_onboarding() {
 	$nag = get_user_meta( wp_get_current_user()->ID, 'faithmade_onboarding_nag_user', true );
-	if( '' === $nag || 'false' === $nag ){
+	if( 'false' === $nag ){
 		return;
 	}
 
