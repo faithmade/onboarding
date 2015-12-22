@@ -14,15 +14,30 @@ if( ! defined( 'ABSPATH' ) )
 define( 'FAITHMADE_OB_PLUGIN_URL', __FILE__ );
 define( 'FAITHMADE_OB_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 
+
+/**
+ * Faithmade Onboarding Trigger Setup
+ */
+function faithmade_onboarding_setup_trigger( $site_id, $user_id, $pass, $title, $meta ) {
+	update_user_meta( $user_id, 'faithmade_onboarding_force_onboarding', 'true' );
+}
+add_action( 'wpmu_activate_blog', 'faithmade_onboarding_setup_trigger', 10, 5 );
+
+
 /**
  * Redirect Logins to Onboarding
  */
 function faithmade_maybe_redirect_onboarding() {
+	$force = get_user_meta( wp_get_current_user()->ID, 'faithmade_onboarding_force_onboarding', true);
+	if( 'true' === $force ) {
+		delete_user_meta( wp_get_current_user()->ID, 'faithmade_onboarding_force_onboarding' );
+		wp_redirect( admin_url('?onboarding'), $status = 302 ); exit;
+	}
+
 	$nag = get_user_meta( wp_get_current_user()->ID, 'faithmade_onboarding_nag_user', true );
 	if( 'false' === $nag ){
 		return;
 	}
-
 	update_user_meta( wp_get_current_user()->ID, 'faithmade_onboarding_nag_user', 'false' );
 	if( 'false' === get_option('faithmade_onboarding_complete') && ! isset( $_REQUEST['onboarding'] ) ) {
 		wp_redirect( admin_url('?onboarding'), $status = 302 ); exit;
