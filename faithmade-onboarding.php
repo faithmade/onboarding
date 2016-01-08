@@ -89,7 +89,7 @@ if( ! is_main_site() && ( ! defined('DOING_AJAX') || ! DOING_AJAX ) && ! isset( 
 }
 
 function faithmade_onboarding_nag() {
-	update_user_meta( $this->current_user->ID, 'faithmade_onboarding_bypass', 'false' );
+	update_user_meta( wp_get_current_user()->ID, 'faithmade_onboarding_bypass', 'false' );
 }
 add_action('wp_logout', 'faithmade_onboarding_nag' );
 
