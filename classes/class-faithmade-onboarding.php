@@ -530,6 +530,7 @@ class Faithmade_Onboarding {
 	public function ajax_route_close() {
 		$step = $_POST['previous_step'] ? sanitize_text_field( $_POST['previous_step'] ) : 'intro';
 		update_user_meta( $this->current_user->ID, 'faithmade_onboarding_step', $step );
+		update_user_meta( $this->current_user->ID, 'faithmade_onboarding_bypass', 'true' );
 		$this->obj_response->code = 200;						
 		$this->obj_response->messages->updated = true;
 

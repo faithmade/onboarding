@@ -53,6 +53,10 @@ function faithmade_onboarding_setup_trigger_existing_user( $user_login, $user ) 
 	if( defined( 'DOING_AJAX') && DOING_AJAX ) {
 		return;
 	}
+	if( 'true' === get_user_meta( $user->ID, 'faithmade_onboarding_bypass', true ) ) {
+		return;
+	}
+
 	$current_step = get_user_meta( $user->ID , 'faithmade_onboarding_step', true );
 	//wp_die( $current_step );
 	if( '' === $current_step ) {
@@ -85,9 +89,7 @@ if( ! is_main_site() && ( ! defined('DOING_AJAX') || ! DOING_AJAX ) && ! isset( 
 }
 
 function faithmade_onboarding_nag() {
-	if( 'false' === get_option( 'faithmade_onboarding_complete' ) ) {
-		update_user_meta( wp_get_current_user()->ID, 'faithmade_onboarding_nag_user', 'true' );
-	}
+	update_user_meta( $this->current_user->ID, 'faithmade_onboarding_bypass', 'false' );
 }
 add_action('wp_logout', 'faithmade_onboarding_nag' );
 
