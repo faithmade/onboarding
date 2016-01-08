@@ -284,6 +284,7 @@ class Faithmade_Onboarding {
 		if( isset( $this->cap_level ) && 'max_cap' === $this->cap_level && ! $this->onboarding_completed ) {
 			$filename = 'modal.php';
 		}
+
 		$file = apply_filters( $this->slug . 'modal_file', FAITHMADE_OB_PLUGIN_PATH . $filename );
 		if( ! is_file( $file ) || ! is_readable( $file ) ) {
 			$this->die_quietly();
@@ -529,11 +530,15 @@ class Faithmade_Onboarding {
 	public function ajax_route_close() {
 		$step = $_POST['previous_step'] ? sanitize_text_field( $_POST['previous_step'] ) : 'intro';
 		update_user_meta( $this->current_user->ID, 'faithmade_onboarding_step', $step );
+		$this->obj_response->code = 200;						
+		$this->obj_response->messages->updated = true;
 
 		if( 'never' === $_POST['close_preference'] ) {
 			update_user_meta( $this->current_user->ID, 'faithmade_onboarding_step', 'final' );
 			update_option('faithmade_onboarding_complete', 'true');
-		}
+			$this->obj_response->code = 200;						
+			$this->obj_response->messages->updated = true;
+		} 
 	}
 
 	/**
